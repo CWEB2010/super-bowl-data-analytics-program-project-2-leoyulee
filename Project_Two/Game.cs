@@ -18,7 +18,64 @@ namespace Project_Two
         public readonly string City;
         public readonly string State;
 
-        public Game(string Date, string RomanOccurance, int Attendance, string QBWin, string CoachWin, string Winner, int WinnerPts, string QBLose, string CoachLose, int LoserPts, string MVP, string Stadium, string City, string State)
+        
+        public Game(string Date, string RomanOccurance, string Attendance, string QBWin, string CoachWin, string Winner, string WinnerPts, string QBLose, string CoachLose, string Loser, string LoserPts, string MVP, string Stadium, string City, string State)
+        {
+            this.Date = Date;
+            this.Year = DateToYear(Date);
+            this.RomanOccurance = RomanOccurance;
+            this.IntOccurance = RomanToInt(RomanOccurance);
+            this.Attendance = StringToInt(Attendance);
+            this.WinningTeam = new Team(Winner, this.Year, true, QBWin, CoachWin, StringToInt(WinnerPts));
+            this.LosingTeam = new Team(Loser, this.Year, false, QBLose, CoachLose, StringToInt(LoserPts));
+            this.MVP = MVP;
+            this.Stadium = Stadium;
+            this.City = City;
+            this.State = State;
+        }
+        public Game(string Date, string RomanOccurance, string Attendance, string[] QBWin, string CoachWin, string Winner, string WinnerPts, string QBLose, string CoachLose, string Loser, string LoserPts, string MVP, string Stadium, string City, string State)
+        {
+            this.Date = Date;
+            this.Year = DateToYear(Date);
+            this.RomanOccurance = RomanOccurance;
+            this.IntOccurance = RomanToInt(RomanOccurance);
+            this.Attendance = StringToInt(Attendance);
+            this.WinningTeam = new Team(Winner, this.Year, true, new List<string>(QBWin), CoachWin, StringToInt(WinnerPts));
+            this.LosingTeam = new Team(Loser, this.Year, false, QBLose, CoachLose, StringToInt(LoserPts));
+            this.MVP = MVP;
+            this.Stadium = Stadium;
+            this.City = City;
+            this.State = State;
+        }
+        public Game(string Date, string RomanOccurance, string Attendance, string[] QBWin, string CoachWin, string Winner, string WinnerPts, string[] QBLose, string CoachLose, string Loser, string LoserPts, string MVP, string Stadium, string City, string State)
+        {
+            this.Date = Date;
+            this.Year = DateToYear(Date);
+            this.RomanOccurance = RomanOccurance;
+            this.IntOccurance = RomanToInt(RomanOccurance);
+            this.Attendance = StringToInt(Attendance);
+            this.WinningTeam = new Team(Winner, this.Year, true, new List<string>(QBWin), CoachWin, StringToInt(WinnerPts));
+            this.LosingTeam = new Team(Loser, this.Year, false, new List<string>(QBLose), CoachLose, StringToInt(LoserPts));
+            this.MVP = MVP;
+            this.Stadium = Stadium;
+            this.City = City;
+            this.State = State;
+        }
+        public Game(string Date, string RomanOccurance, string Attendance, string QBWin, string CoachWin, string Winner, string WinnerPts, string[] QBLose, string CoachLose, string Loser, string LoserPts, string MVP, string Stadium, string City, string State)
+        {
+            this.Date = Date;
+            this.Year = DateToYear(Date);
+            this.RomanOccurance = RomanOccurance;
+            this.IntOccurance = RomanToInt(RomanOccurance);
+            this.Attendance = StringToInt(Attendance);
+            this.WinningTeam = new Team(Winner, this.Year, true, QBWin, CoachWin, StringToInt(WinnerPts));
+            this.LosingTeam = new Team(Loser, this.Year, false, new List<string>(QBLose), CoachLose, StringToInt(LoserPts));
+            this.MVP = MVP;
+            this.Stadium = Stadium;
+            this.City = City;
+            this.State = State;
+        }
+        public Game(string Date, string RomanOccurance, int Attendance, string QBWin, string CoachWin, string Winner, int WinnerPts, string QBLose, string CoachLose, string Loser, int LoserPts, string MVP, string Stadium, string City, string State)
         {
             this.Date = Date;
             this.Year = DateToYear(Date);
@@ -50,17 +107,50 @@ namespace Project_Two
 
         public Game StringToObject(string input)
         {
-            string Date;
-            string RomanOccurance;
-            int Attendance;
-            Team WinningTeam;
-            Team LosingTeam;
-            string MVP;
-            string Stadium;
-            string City;
+            string[] RawData = DecodeString(input);
+            string Date = RawData[0];
+            string RomanOccurance = RawData[1];
+            string Attendance = RawData[2];
+            Object QBWin = RawData[3]; //can be either string array or string
+            string CoachWin = RawData[4];
+            string Winner = RawData[5];
+            string WinnerPts = RawData[6];
+            Object QBLose = RawData[7]; //can be either string array or string
+            string CoachLose = RawData[8];
+            string Loser = RawData[9];
+            string LoserPts = RawData[10];
+            string MVP = RawData[11];
+            string Stadium = RawData[12];
+            string City = RawData[13];
 
-            return Game(Date, RomanOccurance, Attendance, WinningTeam, LosingTeam, MVP, Stadium, City);
+            return new Game(Date, RomanOccurance, Attendance, QBWin, CoachWin, Winner, WinnerPts, QBLose, CoachLose, Loser, LoserPts, MVP, Stadium, City, State);
         }
+
+        //String to Int methods and checker
+        public int StringToInt(string input)
+        {
+            Int32.TryParse(input, out int output);
+            if (output == 0 && input != "0")
+                new InvalidInputException("String inputted to StringToInt does not output expected result.", input);
+            return output;
+        }
+
+        //String to RawData array
+        public string[] DecodeString(string input)
+        {
+            string[] QuoteSplit = input.Split('"');
+            string[] RawData = new string[0];
+            foreach (string s in QuoteSplit)
+            {
+                string[] Array = s.Split(',');
+                string[] EndArray = new string[RawData.Length + Array.Length];
+                RawData.CopyTo(EndArray, 0);
+                Array.CopyTo(EndArray, EndArray.Length);
+                RawData = EndArray;
+            }
+            return RawData;
+        }
+
 
         //Roman To Integer Methods
         public int RomanToInt(string RomanNumeral)

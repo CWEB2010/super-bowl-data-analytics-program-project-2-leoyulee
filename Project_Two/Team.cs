@@ -13,6 +13,19 @@ namespace Project_Two
         public readonly string Coach;
         public readonly int Points;
 
+        public Team(string Name, int Year, bool Victory, string Quarterback, string Coach, int Points)
+        {
+            this.Name = Name;
+            this.Year = Year;
+            this.Victory = Victory;
+            List<string> qbList = new List<string>
+            {
+                Quarterback
+            };
+            this.Quarterbacks = qbList;
+            this.Coach = Coach;
+            this.Points = Points;
+        }
         public Team(string Name, int Year, bool Victory, List<string> Quarterbacks, string Coach, int Points)
         {
             this.Name = Name;
