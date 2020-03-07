@@ -1,15 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using CsvHelper.Configuration.Attributes;
 using System.Text;
 
 namespace Project_Two
 {
-    class Game
+    class Game 
     {
+        [Index(0)]
         public readonly string Date;
+        [DateToYear([Index(0)])]
         public readonly int Year;
+        [Index(1)]
         public readonly string RomanOccurance;
+        [RomanToInt([Index(1)])]
         public readonly int IntOccurance;
+        [Index(2)]
         public readonly int Attendance;
         public readonly Team WinningTeam;
         public readonly Team LosingTeam;
@@ -75,6 +82,20 @@ namespace Project_Two
             this.City = City;
             this.State = State;
         }
+        public Game(string Date, int Year, string RomanOccurance, string Attendance, string QBWin, string CoachWin, string Winner, string WinnerPts, string[] QBLose, string CoachLose, string Loser, string LoserPts, string MVP, string Stadium, string City, string State)
+        {
+            this.Date = Date;
+            this.Year = Year;
+            this.RomanOccurance = RomanOccurance;
+            this.IntOccurance = RomanToInt(RomanOccurance);
+            this.Attendance = StringToInt(Attendance);
+            this.WinningTeam = new Team(Winner, this.Year, true, QBWin, CoachWin, StringToInt(WinnerPts));
+            this.LosingTeam = new Team(Loser, this.Year, false, new List<string>(QBLose), CoachLose, StringToInt(LoserPts));
+            this.MVP = MVP;
+            this.Stadium = Stadium;
+            this.City = City;
+            this.State = State;
+        }
         public Game(string Date, string RomanOccurance, int Attendance, string QBWin, string CoachWin, string Winner, int WinnerPts, string QBLose, string CoachLose, string Loser, int LoserPts, string MVP, string Stadium, string City, string State)
         {
             this.Date = Date;
@@ -109,12 +130,16 @@ namespace Project_Two
         {
             string[] RawData = DecodeString(input);
             string Date = RawData[0];
+            int Year = DateToYear(Date);
             string RomanOccurance = RawData[1];
             string Attendance = RawData[2];
-            Object QBWin = RawData[3]; //can be either string array or string
+
+            string[] QBWin = RawData[3]; //can be either string array or string
             string CoachWin = RawData[4];
             string Winner = RawData[5];
             string WinnerPts = RawData[6];
+            Team WinningTeam = new Team(Winner, Year, true, QBWin, CoachWin, WinnerPts);
+
             Object QBLose = RawData[7]; //can be either string array or string
             string CoachLose = RawData[8];
             string Loser = RawData[9];
@@ -122,7 +147,7 @@ namespace Project_Two
             string MVP = RawData[11];
             string Stadium = RawData[12];
             string City = RawData[13];
-
+            
             return new Game(Date, RomanOccurance, Attendance, QBWin, CoachWin, Winner, WinnerPts, QBLose, CoachLose, Loser, LoserPts, MVP, Stadium, City, State);
         }
 
@@ -131,7 +156,7 @@ namespace Project_Two
         {
             Int32.TryParse(input, out int output);
             if (output == 0 && input != "0")
-                new InvalidInputException("String inputted to StringToInt does not output expected result.", input);
+                throw new InvalidInputException("String inputted to StringToInt does not output expected result.", input);
             return output;
         }
 
@@ -142,7 +167,11 @@ namespace Project_Two
             string[] RawData = new string[0];
             foreach (string s in QuoteSplit)
             {
-                string[] Array = s.Split(',');
+                string[] Array;
+                if (s.Count(t => t.Equals(",")) > 1)
+                    Array = s.Split(',');
+                else
+                    Array = new string[] { s };
                 string[] EndArray = new string[RawData.Length + Array.Length];
                 RawData.CopyTo(EndArray, 0);
                 Array.CopyTo(EndArray, EndArray.Length);

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using NotVisualBasic.FileIO;
 
 namespace Project_Two
 {
@@ -15,7 +15,35 @@ namespace Project_Two
         }
         public void GetDataFile()
         {
-            FileStream
+            using (var parser = new CsvTextFieldParser(@"c:\temp\test.csv"))
+            {
+                if (parser.EndOfData)
+                {
+                    yield break;
+                }
+                string[] headerFields = parser.ReadFields();
+                parser.SetDelimiters(",");
+                while (!parser.EndOfData)
+                {
+                    string[] fields = parser.ReadFields();
+                    int fieldCount = Math.Min(headerFields.Length, fields.Length);
+                    IDictionary<string, string> fieldDictionary = new Dictionary<string, string>(fieldCount);
+                    for (var i = 0; i < fieldCount; i++)
+                    {
+                        string headerField = headerFields[i];
+                        string field = fields[i];
+                        fieldDictionary[headerField] = field;
+                    }
+                    yield return fieldDictionary;
+                    //Processing row
+                    string[] fields = parser.ReadFields();
+                    foreach (string field in fields)
+                    {
+                        //TODO: Process field
+                    }
+                }
+            }
+            ileStream
         }
     }
 }

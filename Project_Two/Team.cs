@@ -26,6 +26,19 @@ namespace Project_Two
             this.Coach = Coach;
             this.Points = Points;
         }
+        public Team(string Name, int Year, bool Victory, string[] Quarterbacks, string Coach, int Points)
+        {
+            this.Name = Name;
+            this.Year = Year;
+            this.Victory = Victory;
+            List<string> qbList = new List<string>
+            (
+                Quarterbacks
+            );
+            this.Quarterbacks = qbList;
+            this.Coach = Coach;
+            this.Points = Points;
+        }
         public Team(string Name, int Year, bool Victory, List<string> Quarterbacks, string Coach, int Points)
         {
             this.Name = Name;
