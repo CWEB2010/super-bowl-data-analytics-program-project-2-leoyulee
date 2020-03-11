@@ -13,7 +13,7 @@ namespace Project_Two
             Console.WriteLine("Welcome to the Superbowl [PC]superProgram!");
             GetDataFile();
         }
-        public void GetDataFile()
+        public static void GetDataFile()
         {
             using (var parser = new TextFieldParser(@"c:\temp\test.csv"))
             {
@@ -43,7 +43,6 @@ namespace Project_Two
                     }
                 }
             }
-            ileStream
         }
     }
 }
