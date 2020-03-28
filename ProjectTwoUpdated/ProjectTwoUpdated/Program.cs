@@ -10,8 +10,14 @@ namespace Project_Two
             /**Your application should allow the end user to pass end a file path for output 
             * or guide them through generating the file.
             **/
+            GetFilePath(out string FilePath);
             Console.WriteLine("Welcome to the Superbowl [PC]superProgram!");
             GetDataFile();
+        }
+        public static void GetFilePath(out string FilePath)
+        {
+            string 
+            Console.ReadLine();
         }
         public static void GetDataFile()
         {
@@ -25,7 +31,7 @@ namespace Project_Two
                 parser.SetDelimiters(",");
                 while (!parser.EndOfData)
                 {
-                    string[] fields = parser.ReadFields();
+                    /*string[] fields = parser.ReadFields();
                     int fieldCount = Math.Min(headerFields.Length, fields.Length);
                     IDictionary<string, string> fieldDictionary = new Dictionary<string, string>(fieldCount);
                     for (var i = 0; i < fieldCount; i++)
@@ -34,7 +40,7 @@ namespace Project_Two
                         string field = fields[i];
                         fieldDictionary[headerField] = field;
                     }
-                    yield return fieldDictionary;
+                    yield return fieldDictionary;*/
                     //Processing row
                     string[] fields = parser.ReadFields();
                     foreach (string field in fields)
