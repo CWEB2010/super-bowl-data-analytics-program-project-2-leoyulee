@@ -10,18 +10,26 @@ namespace Project_Two
             /**Your application should allow the end user to pass end a file path for output 
             * or guide them through generating the file.
             **/
-            GetFilePath(out string FilePath);
+            string FilePath = GetFilePath();
             Console.WriteLine("Welcome to the Superbowl [PC]superProgram!");
             GetDataFile();
         }
-        public static void GetFilePath(out string FilePath)
+        public static string GetFilePath()
         {
-            string 
-            Console.ReadLine();
+            string FilePath = @".\";
+            try
+            {
+                System.IO.File.OpenRead(FilePath);
+            }
+            catch
+            {
+                Console.WriteLine("File couldn't be found at {0}", FilePath);
+            }
+            return FilePath;
         }
-        public static void GetDataFile()
+        public static void GetDataFile(string FilePath)
         {
-            using (var parser = new TextFieldParser(@"c:\temp\test.csv"))
+            using (var parser = new TextFieldParser(FilePath)) //@"c:\temp\test.csv"
             {
                 if (parser.EndOfData)
                 {
