@@ -21,5 +21,10 @@ namespace Project_Two
         {
             Input = input;
         }
+        public InvalidInputException(string message, char input)
+            : this(message)
+        {
+            Input = input.ToString();
+        }
     }
 }
