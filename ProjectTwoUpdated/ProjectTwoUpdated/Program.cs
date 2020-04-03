@@ -16,6 +16,7 @@ namespace Project_Two
         }
         public static string GetFilePath()
         {
+            int UserChoice = Prompt(false);
             string FilePath = @".\";
             try
             {
@@ -27,6 +28,7 @@ namespace Project_Two
             }
             return FilePath;
         }
+
         public static void GetDataFile(string FilePath)
         {
             using (var parser = new TextFieldParser(FilePath)) //@"c:\temp\test.csv"
@@ -56,6 +58,51 @@ namespace Project_Two
                         //TODO: Process field
                     }
                 }
+            }
+        }
+        private static int Prompt(bool subtractOne, params string[] args)
+        {
+            int argsLength = args.Length;
+            if (argsLength == 1)
+            {
+                Console.WriteLine("Note to developer: You shouldn't be using this method if you're going to put only one argument in");
+            }
+            Console.WriteLine("Enter one button, 1 through {0}, to make your selection.", argsLength);
+            for (int i = 0; i < argsLength; i++)
+            {
+                Console.WriteLine("{0}. {1}", i + 1, args[i]);
+            }
+            int response = GetIntResponse(1, argsLength); //insert button pressing method here
+            if (subtractOne)
+            {
+                response--;
+            }
+            return response;
+        }
+        private static int GetIntResponse(int min, int max, bool error = false)
+        {
+            PrintError(error);
+            string userInput = Console.ReadLine();
+            if (Int32.TryParse(userInput, out int response))
+            {
+                return response;
+            }
+            else
+            {
+                return GetIntResponse(min, max, true);
+            }
+        }
+        private static string GetStrResponse(bool error = false)
+        {
+            PrintError(error);
+            string userInput = Console.ReadLine();
+            return userInput;
+        }
+        private static void PrintError(bool error = false, string reason = "Invalid input. Please try again.")
+        {
+            if (error)
+            {
+                Console.WriteLine(reason);
             }
         }
     }
