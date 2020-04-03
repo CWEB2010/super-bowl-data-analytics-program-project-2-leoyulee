@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Project_Two
 {
-    class Game
+    public class Game
     {
         public readonly string Date;
         public readonly int Year;
@@ -217,27 +217,19 @@ namespace Project_Two
             LargestNumber = 0;
             foreach (char r in RomanNumeral)
             {
-                
-                if (Char.Equals(r,'L'))
+                if (r == 'L')
                 {
                     Output.Add(50);
                     if (LargestNumber < 50)
                         LargestNumber = 50;
                 }else
-                if (Char.Equals(r,'X'))
+                if (r == 'X')
                 {
                     Output.Add(10);
                     if (LargestNumber < 10)
                         LargestNumber = 10;
                 }else
-                if (Char.Equals(r,'V'))
-                {
-                    Output.Add(5);
-                    if (LargestNumber < 5)
-                        LargestNumber = 5;
-                }
-                else
-                if (Char.Equals(r,'I'))
+                if (r == 'I')
                 {
                     Output.Add(1);
                     if (LargestNumber < 1)
@@ -245,8 +237,7 @@ namespace Project_Two
                 }
                 else
                 {
-                    Console.WriteLine(r);
-                    throw new InvalidInputException("Unidentified Roman Numeral inputted into RomanToIntList method.", r);
+                    throw new InvalidInputException("Unidentified Roman Numeral inputted into RomanToIntList method.", r.ToString());
                 }
             }
             Output.TrimExcess();
@@ -326,7 +317,7 @@ namespace Project_Two
         private static string GetYearFooter(string Date)
         {
             string[] SplitDate = Date.Split('-');
-            return SplitDate[2];
+            return SplitDate[3];
         }
     }
 }
