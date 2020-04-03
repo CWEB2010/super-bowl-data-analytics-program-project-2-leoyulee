@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Collections.Generic;
 using Microsoft.VisualBasic.FileIO;
 
 namespace Project_Two
@@ -12,10 +13,11 @@ namespace Project_Two
             /**Your application should allow the end user to pass end a file path for output 
             * or guide them through generating the file.
             **/
+            List<Game> Games = new List<Game>();
+            Console.WriteLine("Welcome to the Superbowl [PC]superProgram!");
             Console.WriteLine("How would you like to access your data file?");
             string FilePath = GetFilePath(Prompt(false, "Use file at " + DefaultFilePath, "Input your own file path"), DefaultFilePath);
-            Console.WriteLine("Welcome to the Superbowl [PC]superProgram!");
-            GetDataFile(FilePath);
+            GetData(FilePath, ref Games);
         }
         public static string GetFilePath(int UserChoice, string FilePath)
         {
@@ -43,30 +45,38 @@ namespace Project_Two
                 Console.WriteLine("File couldn't be read at {0}", FilePath);
                 return false;
             }
-            /*try
+            try
             {
-                using (var testParser = new TextFieldParser(FilePath))
+                using var testParser = new TextFieldParser(FilePath)
                 {
-                    if (testParser.EndOfData)
-                    {
-                        yield break;
-                    }
-                    string[] headerFields = testParser.ReadFields();
-
+                    TextFieldType = FieldType.Delimited
+                };
+                if (testParser.EndOfData)
+                {
+                    Console.WriteLine("File doesn't contain data!");
+                    return false;
+                }
+                testParser.SetDelimiters(",");
+                string[] headerFields = testParser.ReadFields();
+                if (headerFields.Length != 15)
+                {
+                    Console.WriteLine("File doesn't contain the correct amount of headers. Refer to README.");
+                    return false;
                 }
             }
             catch
             {
-                Console.WriteLine("File doesn't contain the correct fields. Refer to README.");
+                Console.WriteLine("File cannot be read by the TextFieldParser.");
                 return false;
             }
-            */
             return true;
         }
-        public static void GetDataFile(string FilePath)
+        public static void GetData(string FilePath, ref List<Game> GameList)
         {
-            using var parser = new TextFieldParser(@FilePath);
-            parser.TextFieldType = FieldType.Delimited;
+            using var parser = new TextFieldParser(@FilePath)
+            {
+                TextFieldType = FieldType.Delimited
+            };
             parser.SetDelimiters(",");
             string[] headerFields = parser.ReadFields();
             foreach(string header in headerFields)
@@ -88,6 +98,7 @@ namespace Project_Two
                 //Processing row
                 string[] GameData = parser.ReadFields();
                 Game thisGame = Game.DataToObject(GameData);
+                GameList.Add(thisGame);
             }
         }
         private static int Prompt(bool subtractOne, params string[] args)
