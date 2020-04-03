@@ -6,7 +6,7 @@ namespace Project_Two
 {
     class Program
     {
-        static readonly string DefaultFilePath = @"..\";
+        static readonly string DefaultFilePath = Path.GetFullPath(@"..\..\..\")+ "Super_Bowl_Project.csv";
         static void Main(string[] args)
         {
             /**Your application should allow the end user to pass end a file path for output 
@@ -65,13 +65,14 @@ namespace Project_Two
         }
         public static void GetDataFile(string FilePath)
         {
-            using var parser = new TextFieldParser(FilePath);
-            if (parser.EndOfData)
-            {
-                //yield break;
-            }
-            string[] headerFields = parser.ReadFields();
+            using var parser = new TextFieldParser(@FilePath);
+            parser.TextFieldType = FieldType.Delimited;
             parser.SetDelimiters(",");
+            string[] headerFields = parser.ReadFields();
+            foreach(string header in headerFields)
+            {
+                Console.WriteLine(header);
+            }
             while (!parser.EndOfData)
             {
                 /*string[] fields = parser.ReadFields();
@@ -85,12 +86,8 @@ namespace Project_Two
                 }
                 yield return fieldDictionary;*/
                 //Processing row
-                string[] fields = parser.ReadFields();
-                foreach (string field in fields)
-                {
-                    Console.WriteLine(field);
-                    //TODO: Process field
-                }
+                string[] GameData = parser.ReadFields();
+                Game thisGame = Game.DataToObject(GameData);
             }
         }
         private static int Prompt(bool subtractOne, params string[] args)
