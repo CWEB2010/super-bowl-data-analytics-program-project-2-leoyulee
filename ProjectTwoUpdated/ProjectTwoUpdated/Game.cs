@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Project_Two
 {
-    public class Game
+    class Game
     {
         public readonly string Date;
         public readonly int Year;
@@ -228,7 +228,15 @@ namespace Project_Two
                     Output.Add(10);
                     if (LargestNumber < 10)
                         LargestNumber = 10;
-                }else
+                }
+                else
+                if (r == 'V')
+                {
+                    Output.Add(5);
+                    if (LargestNumber < 5)
+                        LargestNumber = 5;
+                }
+                else
                 if (r == 'I')
                 {
                     Output.Add(1);
@@ -317,7 +325,7 @@ namespace Project_Two
         private static string GetYearFooter(string Date)
         {
             string[] SplitDate = Date.Split('-');
-            return SplitDate[3];
+            return SplitDate[2];
         }
     }
 }
