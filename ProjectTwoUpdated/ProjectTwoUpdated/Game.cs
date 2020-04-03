@@ -1,22 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CsvHelper.Configuration.Attributes;
-using System.Text;
 
 namespace Project_Two
 {
     class Game 
     {
-        [Index(0)]
         public readonly string Date;
-        [DateToYear([Index(0)])]
         public readonly int Year;
-        [Index(1)]
         public readonly string RomanOccurance;
-        [RomanToInt([Index(1)])]
         public readonly int IntOccurance;
-        [Index(2)]
         public readonly int Attendance;
         public readonly Team WinningTeam;
         public readonly Team LosingTeam;
@@ -103,8 +96,8 @@ namespace Project_Two
             this.RomanOccurance = RomanOccurance;
             this.IntOccurance = RomanToInt(RomanOccurance);
             this.Attendance = Attendance;
-            this.WinningTeam = new Team();
-            this.LosingTeam = new Team();
+            this.WinningTeam = new Team(Winner, this.Year, true, QBWin, CoachWin, WinnerPts);
+            this.LosingTeam = new Team(Loser, this.Year, false, QBLose, CoachLose, LoserPts);
             this.MVP = MVP;
             this.Stadium = Stadium;
             this.City = City;
@@ -134,13 +127,13 @@ namespace Project_Two
             string RomanOccurance = RawData[1];
             string Attendance = RawData[2];
 
-            string[] QBWin = RawData[3]; //can be either string array or string
+            var QBWin = RawData[3]; //can be either string array or string
             string CoachWin = RawData[4];
             string Winner = RawData[5];
             string WinnerPts = RawData[6];
-            Team WinningTeam = new Team(Winner, Year, true, QBWin, CoachWin, WinnerPts);
+            Team WinningTeam = new Team(Winner, Year, true, QBWin, CoachWin, StringToInt(WinnerPts));
 
-            Object QBLose = RawData[7]; //can be either string array or string
+            var QBLose = RawData[7]; //can be either string array or string
             string CoachLose = RawData[8];
             string Loser = RawData[9];
             string LoserPts = RawData[10];

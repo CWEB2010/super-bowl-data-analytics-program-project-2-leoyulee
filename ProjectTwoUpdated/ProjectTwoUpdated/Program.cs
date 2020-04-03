@@ -1,62 +1,95 @@
 ﻿using System;
+using System.IO;
 using Microsoft.VisualBasic.FileIO;
 
 namespace Project_Two
 {
     class Program
     {
+        static readonly string DefaultFilePath = @"..\";
         static void Main(string[] args)
         {
             /**Your application should allow the end user to pass end a file path for output 
             * or guide them through generating the file.
             **/
-            string FilePath = GetFilePath();
+            Console.WriteLine("How would you like to access your data file?");
+            string FilePath = GetFilePath(Prompt(false, "Use file at " + DefaultFilePath, "Input your own file path"), DefaultFilePath);
             Console.WriteLine("Welcome to the Superbowl [PC]superProgram!");
-            GetDataFile();
+            GetDataFile(FilePath);
         }
-        public static string GetFilePath()
+        public static string GetFilePath(int UserChoice, string FilePath)
         {
-            int UserChoice = Prompt(false);
-            string FilePath = @".\";
+            if (UserChoice == 2)
+            {
+                Console.WriteLine("Input the file location of the data file:");
+                FilePath = GetStrResponse();
+            }
+            if (!CheckFilePath(FilePath))
+            {
+                Console.WriteLine("Would you like to try to read the file at {0} again?", FilePath);
+                UserChoice = Prompt(false, "Yes", "No");
+                GetFilePath(UserChoice, FilePath);
+            }
+            return FilePath;
+        }
+        public static bool CheckFilePath(string FilePath)
+        {
             try
             {
                 System.IO.File.OpenRead(FilePath);
             }
             catch
             {
-                Console.WriteLine("File couldn't be found at {0}", FilePath);
+                Console.WriteLine("File couldn't be read at {0}", FilePath);
+                return false;
             }
-            return FilePath;
-        }
+            /*try
+            {
+                using (var testParser = new TextFieldParser(FilePath))
+                {
+                    if (testParser.EndOfData)
+                    {
+                        yield break;
+                    }
+                    string[] headerFields = testParser.ReadFields();
 
+                }
+            }
+            catch
+            {
+                Console.WriteLine("File doesn't contain the correct fields. Refer to README.");
+                return false;
+            }
+            */
+            return true;
+        }
         public static void GetDataFile(string FilePath)
         {
-            using (var parser = new TextFieldParser(FilePath)) //@"c:\temp\test.csv"
+            using var parser = new TextFieldParser(FilePath);
+            if (parser.EndOfData)
             {
-                if (parser.EndOfData)
+                //yield break;
+            }
+            string[] headerFields = parser.ReadFields();
+            parser.SetDelimiters(",");
+            while (!parser.EndOfData)
+            {
+                /*string[] fields = parser.ReadFields();
+                int fieldCount = Math.Min(headerFields.Length, fields.Length);
+                IDictionary<string, string> fieldDictionary = new Dictionary<string, string>(fieldCount);
+                for (var i = 0; i < fieldCount; i++)
                 {
-                    yield break;
+                    string headerField = headerFields[i];
+                    string field = fields[i];
+                    fieldDictionary[headerField] = field;
                 }
-                string[] headerFields = parser.ReadFields();
-                parser.SetDelimiters(",");
-                while (!parser.EndOfData)
+                yield return fieldDictionary;*/
+                //Processing row
+                string[] fields = parser.ReadFields();
+                foreach (string field in fields)
                 {
-                    /*string[] fields = parser.ReadFields();
-                    int fieldCount = Math.Min(headerFields.Length, fields.Length);
-                    IDictionary<string, string> fieldDictionary = new Dictionary<string, string>(fieldCount);
-                    for (var i = 0; i < fieldCount; i++)
-                    {
-                        string headerField = headerFields[i];
-                        string field = fields[i];
-                        fieldDictionary[headerField] = field;
-                    }
-                    yield return fieldDictionary;*/
-                    //Processing row
-                    string[] fields = parser.ReadFields();
-                    foreach (string field in fields)
-                    {
-                        //TODO: Process field
-                    }
+                    Console.WriteLine(field);
+                    //TODO: Process field
                 }
             }
         }
@@ -72,7 +105,7 @@ namespace Project_Two
             {
                 Console.WriteLine("{0}. {1}", i + 1, args[i]);
             }
-            int response = GetIntResponse(1, argsLength); //insert button pressing method here
+            int response = GetIntResponse(1, argsLength);
             if (subtractOne)
             {
                 response--;
