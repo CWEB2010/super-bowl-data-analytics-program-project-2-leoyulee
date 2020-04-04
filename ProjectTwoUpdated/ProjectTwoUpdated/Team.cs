@@ -48,5 +48,9 @@ namespace Project_Two
             this.Coach = Coach;
             this.Points = Points;
         }
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 }

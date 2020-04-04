@@ -8,18 +8,45 @@ namespace Project_Two
     class Program
     {
         static readonly string DefaultFilePath = Path.GetFullPath(@"..\..\..\")+ "Super_Bowl_Project.csv";
+        static readonly string DefaultOutputPath = Path.GetFullPath(@"..\..\..\");
         static void Main(string[] args)
         {
             /**Your application should allow the end user to pass end a file path for output 
             * or guide them through generating the file.
             **/
             List<Game> Games = new List<Game>();
+            string OutputFilePath;
             Console.WriteLine("Welcome to the Superbowl [PC]superProgram!");
             Console.WriteLine("How would you like to access your data file?");
-            string FilePath = GetFilePath(Prompt(false, "Use file at " + DefaultFilePath, "Input your own file path"), DefaultFilePath);
-            GetData(FilePath, ref Games);
+            string InputFilePath = GetFilePath(Prompt(false, "Use file at " + DefaultFilePath, "Input your own file path"), DefaultFilePath);
+            GetData(InputFilePath, ref Games);
+            Console.WriteLine("Where would you like the output file to be?");
+            OutputFilePath = GetOutputPath(Prompt(false, "Output at " + DefaultOutputPath, "Input your own path"), DefaultOutputPath);
+            OutputFile(OutputFilePath);
+            Console.WriteLine("What pieces of data would you like to see?");
+            int UserChoice = Prompt(false, "Winning Teams", "Top five attended super bowls", "The state that hosted the most super bowls", "List of players who won MVP more than once", "The coach that lost the most super bowls", "The coach that won the most super bowls", "The team(s) that won the most super bowls", "The super bowl that had the greatest point difference", "The average attendance of all super bowls");
         }
-        public static string GetFilePath(int UserChoice, string FilePath)
+        private static void OutputFile(string FilePath)
+        {
+
+        }
+        private static string GetOutputPath(int UserChoice, string FilePath)
+        {
+            if (UserChoice == 2)
+            {
+                Console.WriteLine("Input the output location:");
+                FilePath = GetStrResponse();
+            }
+            Console.WriteLine("The file will be outputted at " + FilePath + "Super_Bowl_Project_Output.txt");
+            Console.WriteLine("Confirm?");
+            UserChoice = Prompt(false, "Yes", "No");
+            if(UserChoice == 2)
+            {
+                GetOutputPath(UserChoice, FilePath);
+            }
+            return FilePath;
+        }
+        private static string GetFilePath(int UserChoice, string FilePath)
         {
             if (UserChoice == 2)
             {
@@ -34,7 +61,7 @@ namespace Project_Two
             }
             return FilePath;
         }
-        public static bool CheckFilePath(string FilePath)
+        private static bool CheckFilePath(string FilePath)
         {
             try
             {
@@ -71,7 +98,7 @@ namespace Project_Two
             }
             return true;
         }
-        public static void GetData(string FilePath, ref List<Game> GameList)
+        private static void GetData(string FilePath, ref List<Game> GameList)
         {
             using var parser = new TextFieldParser(@FilePath)
             {
@@ -79,27 +106,18 @@ namespace Project_Two
             };
             parser.SetDelimiters(",");
             string[] headerFields = parser.ReadFields();
-            foreach(string header in headerFields)
+            /*foreach(string header in headerFields)
             {
                 Console.WriteLine(header);
-            }
+            }*/
             while (!parser.EndOfData)
             {
-                /*string[] fields = parser.ReadFields();
-                int fieldCount = Math.Min(headerFields.Length, fields.Length);
-                IDictionary<string, string> fieldDictionary = new Dictionary<string, string>(fieldCount);
-                for (var i = 0; i < fieldCount; i++)
-                {
-                    string headerField = headerFields[i];
-                    string field = fields[i];
-                    fieldDictionary[headerField] = field;
-                }
-                yield return fieldDictionary;*/
-                //Processing row
                 string[] GameData = parser.ReadFields();
                 Game thisGame = Game.DataToObject(GameData);
                 GameList.Add(thisGame);
             }
+            Console.Clear();
+            Console.WriteLine("Finished parsing data succesfully!");
         }
         private static int Prompt(bool subtractOne, params string[] args)
         {

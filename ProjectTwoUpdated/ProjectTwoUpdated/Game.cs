@@ -17,12 +17,9 @@ namespace Project_Two
         public readonly string Stadium;
         public readonly string City;
         public readonly string State;
+        private readonly string[] OriginalData;
 
-        public Game(string[] RawData)
-        {
-            DataToObject(RawData);
-        }
-        public Game(string Date, string RomanOccurance, string Attendance, string QBWin, string CoachWin, string Winner, string WinnerPts, string QBLose, string CoachLose, string Loser, string LoserPts, string MVP, string Stadium, string City, string State)
+        public Game(string Date, string RomanOccurance, string Attendance, string QBWin, string CoachWin, string Winner, string WinnerPts, string QBLose, string CoachLose, string Loser, string LoserPts, string MVP, string Stadium, string City, string State, string[] RawData)
         {
             this.Date = Date;
             this.Year = DateToYear(Date);
@@ -35,8 +32,9 @@ namespace Project_Two
             this.Stadium = Stadium;
             this.City = City;
             this.State = State;
+            this.OriginalData = RawData;
         }
-        public Game(string Date, string RomanOccurance, string Attendance, string[] QBWin, string CoachWin, string Winner, string WinnerPts, string QBLose, string CoachLose, string Loser, string LoserPts, string MVP, string Stadium, string City, string State)
+        public Game(string Date, string RomanOccurance, string Attendance, string[] QBWin, string CoachWin, string Winner, string WinnerPts, string QBLose, string CoachLose, string Loser, string LoserPts, string MVP, string Stadium, string City, string State, string[] RawData)
         {
             this.Date = Date;
             this.Year = DateToYear(Date);
@@ -49,8 +47,9 @@ namespace Project_Two
             this.Stadium = Stadium;
             this.City = City;
             this.State = State;
+            this.OriginalData = RawData;
         }
-        public Game(string Date, string RomanOccurance, string Attendance, string[] QBWin, string CoachWin, string Winner, string WinnerPts, string[] QBLose, string CoachLose, string Loser, string LoserPts, string MVP, string Stadium, string City, string State)
+        public Game(string Date, string RomanOccurance, string Attendance, string[] QBWin, string CoachWin, string Winner, string WinnerPts, string[] QBLose, string CoachLose, string Loser, string LoserPts, string MVP, string Stadium, string City, string State, string[] RawData)
         {
             this.Date = Date;
             this.Year = DateToYear(Date);
@@ -63,8 +62,9 @@ namespace Project_Two
             this.Stadium = Stadium;
             this.City = City;
             this.State = State;
+            this.OriginalData = RawData;
         }
-        public Game(string Date, string RomanOccurance, string Attendance, string QBWin, string CoachWin, string Winner, string WinnerPts, string[] QBLose, string CoachLose, string Loser, string LoserPts, string MVP, string Stadium, string City, string State)
+        public Game(string Date, string RomanOccurance, string Attendance, string QBWin, string CoachWin, string Winner, string WinnerPts, string[] QBLose, string CoachLose, string Loser, string LoserPts, string MVP, string Stadium, string City, string State, string[] RawData)
         {
             this.Date = Date;
             this.Year = DateToYear(Date);
@@ -77,8 +77,9 @@ namespace Project_Two
             this.Stadium = Stadium;
             this.City = City;
             this.State = State;
+            this.OriginalData = RawData;
         }
-        public Game(string Date, int Year, string RomanOccurance, string Attendance, string QBWin, string CoachWin, string Winner, string WinnerPts, string[] QBLose, string CoachLose, string Loser, string LoserPts, string MVP, string Stadium, string City, string State)
+        public Game(string Date, int Year, string RomanOccurance, string Attendance, string QBWin, string CoachWin, string Winner, string WinnerPts, string[] QBLose, string CoachLose, string Loser, string LoserPts, string MVP, string Stadium, string City, string State, string[] RawData)
         {
             this.Date = Date;
             this.Year = Year;
@@ -91,8 +92,9 @@ namespace Project_Two
             this.Stadium = Stadium;
             this.City = City;
             this.State = State;
+            this.OriginalData = RawData;
         }
-        public Game(string Date, string RomanOccurance, int Attendance, string QBWin, string CoachWin, string Winner, int WinnerPts, string QBLose, string CoachLose, string Loser, int LoserPts, string MVP, string Stadium, string City, string State)
+        public Game(string Date, string RomanOccurance, int Attendance, string QBWin, string CoachWin, string Winner, int WinnerPts, string QBLose, string CoachLose, string Loser, int LoserPts, string MVP, string Stadium, string City, string State, string[] RawData)
         {
             this.Date = Date;
             this.Year = DateToYear(Date);
@@ -105,9 +107,10 @@ namespace Project_Two
             this.Stadium = Stadium;
             this.City = City;
             this.State = State;
+            this.OriginalData = RawData;
         }
 
-        public Game(string Date,string RomanOccurance,int Attendance,Team WinningTeam,Team LosingTeam,string MVP,string Stadium,string City,string State)
+        public Game(string Date,string RomanOccurance,int Attendance,Team WinningTeam,Team LosingTeam,string MVP,string Stadium,string City,string State,string[] RawData)
         {
             this.Date = Date;
             this.Year = DateToYear(Date);
@@ -120,8 +123,12 @@ namespace Project_Two
             this.Stadium = Stadium;
             this.City = City;
             this.State = State;
+            this.OriginalData = RawData;
         }
-
+        public string[] ReturnOriginalData()
+        {
+            return OriginalData;
+        }
         public static Game DataToObject(string[] RawData)
         {
             string Date = RawData[0];
@@ -146,7 +153,7 @@ namespace Project_Two
             string City = RawData[13];
             string State = RawData[14];
 
-            return new Game(Date, RomanOccurance, StringToInt(Attendance), WinningTeam, LosingTeam, MVP, Stadium, City, State);
+            return new Game(Date, RomanOccurance, StringToInt(Attendance), WinningTeam, LosingTeam, MVP, Stadium, City, State, RawData);
         }
 
         public static Game StringToObject(string input)
