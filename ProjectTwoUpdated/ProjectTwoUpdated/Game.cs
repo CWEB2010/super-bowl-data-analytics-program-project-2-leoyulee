@@ -179,7 +179,7 @@ namespace Project_Two
             string City = RawData[13];
             string State = RawData[14];
 
-            return new Game(Date, RomanOccurance, Attendance, QBWin, CoachWin, Winner, WinnerPts, QBLose, CoachLose, Loser, LoserPts, MVP, Stadium, City, State);
+            return new Game(Date, RomanOccurance, Attendance, QBWin, CoachWin, Winner, WinnerPts, QBLose, CoachLose, Loser, LoserPts, MVP, Stadium, City, State, RawData);
         }
 
         //String to Int methods and checker

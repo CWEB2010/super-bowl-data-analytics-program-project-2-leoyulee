@@ -26,26 +26,28 @@ namespace Project_Two
                 this.AddRow(row);
             }
         }
-        public void ReturnTableArray(List<Game> TakenPlayers = null)
+        public string[] ReturnTableArray(List<Game> TakenPlayers = null)
         {
-            Console.Clear();
+            string[] output = new string[Rows.Count + 3];
             int tabs = 0;
             foreach (int column in minColumnLength)
             {
                 tabs += column;
             }
-            for (int i = -1; i < Rows.Count; i++)
+            output[0] = ReturnSeparator(TabLength * tabs);
+            for (int i = 1; i < Rows.Count+2; i++)
             {
-                PrintSeparator(TabLength * tabs);
-                if (i == -1)
+                if (i == 1)
                 {
-                    PrintHeader();
+                    output[i] = ReturnHeader();
                 }
                 else
                 {
-                    PrintRow(Rows[i], TakenPlayers);
+                    output[i] = ReturnRow(Rows[i], TakenPlayers);
                 }
             }
+            output[Rows.Count+1] = ReturnSeparator(TabLength * tabs);
+            return output;
         }
         public void PrintTable(List<Game> TakenPlayers = null)
         {
@@ -74,7 +76,7 @@ namespace Project_Two
             this.Rows.TrimExcess();
             this.checkRowStrings(FilledRow);
         }
-        public Game GetPlayerByName(string inputName)
+        /*public Game GetPlayerByName(string inputName)
         {
             foreach(Game row in this.Rows)
             {
@@ -85,7 +87,7 @@ namespace Project_Two
                 }
             }
             return null;
-        }
+        }*/
         private void checkRowStrings(Game Game)
         {
             string[] input = Game.ReturnOriginalData();
@@ -153,13 +155,25 @@ namespace Project_Two
             }
             Console.WriteLine(outputString);
         }
-        private string[] ReturnRows(Game row, List<Game> TakenPlayer = null)
+        private string ReturnRow(Game row, List<Game> TakenPlayer = null)
         {
-            string[] outputs = new string[] { "", "", "" };
-            ConsoleColor originalColor = Console.ForegroundColor;
-            List<Game> PlayerList = row.GetPlayerList();
+            string output = "";
+            //ConsoleColor originalColor = Console.ForegroundColor;
+            string[] GameData = row.ReturnOriginalData();
+            for (int i = 0; i < GameData.Length; i++)
+            {
+                if (i != GameData.Length - 1)
+                {
+                    output += createTab(minColumnLength[i], GameData[i]);
+                }
+                else
+                {
+                    output += GameData[i];
+                }
+            }
+            //List<Game> PlayerList = row.GetPlayerList();
 
-            for (int i = 0; i < PlayerList.Count; i++)
+            /*for (int i = 0; i < PlayerList.Count; i++)
             {
                 int j = i + 1;
                 if (i == 0)
@@ -168,13 +182,13 @@ namespace Project_Two
                     outputs[1] += createTab(minColumnLength[i]);
                     outputs[2] += createTab(minColumnLength[i]);
                 }
-                /*foreach(Game player in TakenPlayer)
+                //foreach(Game player in TakenPlayer)
                 {
                     if(GetPlayerByName(player.Name) != null)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                     }
-                }*/
+                //}
                 if (i != PlayerList.Count - 1)
                 {
                     outputs[0] += createTab(minColumnLength[j], PlayerList[i].PrintName());
@@ -187,16 +201,28 @@ namespace Project_Two
                     outputs[1] += PlayerList[i].PrintInstitution();
                     outputs[2] += PlayerList[i].PrintSalary();
                 }
-            }
-            return outputs;
+            }*/
+            return output;
         }
         private void PrintRow(Game row, List<Game> TakenPlayer = null)
         {
-            string[] outputs = new string[] { "", "", "" };
-            ConsoleColor originalColor = Console.ForegroundColor;
-            List<Game> PlayerList = row.GetPlayerList();
+            string output = "";
+            //ConsoleColor originalColor = Console.ForegroundColor;
+            string[] GameData = row.ReturnOriginalData();
+            for (int i = 0; i < GameData.Length; i++)
+            {
+                if (i != GameData.Length - 1)
+                {
+                    output += createTab(minColumnLength[i], GameData[i]);
+                }
+                else
+                {
+                    output += GameData[i];
+                }
+            }
+            //List<Game> PlayerList = row.GetPlayerList();
 
-            for (int i = 0; i < PlayerList.Count; i++)
+            /*for (int i = 0; i < PlayerList.Count; i++)
             {
                 int j = i + 1;
                 if (i == 0)
@@ -205,14 +231,14 @@ namespace Project_Two
                     outputs[1] += createTab(minColumnLength[i]);
                     outputs[2] += createTab(minColumnLength[i]);
                 }
-                /*foreach(Game player in TakenPlayer)
+                //foreach(Game player in TakenPlayer)
                 {
                     if(GetPlayerByName(player.Name) != null)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                     }
-                }*/
-                if (i != PlayerList.Count-1)
+                //}
+                if (i != PlayerList.Count - 1)
                 {
                     outputs[0] += createTab(minColumnLength[j], PlayerList[i].PrintName());
                     outputs[1] += createTab(minColumnLength[j], PlayerList[i].PrintInstitution());
@@ -224,11 +250,8 @@ namespace Project_Two
                     outputs[1] += PlayerList[i].PrintInstitution();
                     outputs[2] += PlayerList[i].PrintSalary();
                 }
-            }
-            foreach (string output in outputs)
-            {
-                Console.WriteLine(output);
-            }
+            }*/
+            Console.WriteLine(output);
         }
         private string createTab(int columnLength, string stringToBeFormatted = "")
         {
