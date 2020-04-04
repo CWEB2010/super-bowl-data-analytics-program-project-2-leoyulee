@@ -11,22 +11,23 @@ namespace Project_Two
         private static readonly int minCharBeforeTab = 4;
         private readonly String[] Header;
         private int[] minColumnLength; //minColumnLength = new int[Header.Length]
-        private List<Game> Rows;
-        public Table()
+        private List<string[]> Rows;
+        public Table(String[] Headers)
         {
-            this.Rows = new List<Game>();
+            this.Header = Headers;
+            this.Rows = new List<string[]>();
         }
-        public Table(String[] Headers, Game[] FilledRows)
+        public Table(String[] Headers, List<string[]> FilledRows)
         {
             this.Header = Headers;
             minColumnLength = new int[Header.Length];
-            this.Rows = new List<Game>();
-            foreach (Game row in FilledRows)
+            this.Rows = new List<string[]>();
+            foreach (string[] row in FilledRows)
             {
                 this.AddRow(row);
             }
         }
-        public string[] ReturnTableArray(List<Game> TakenPlayers = null)
+        public string[] ReturnTableArray()
         {
             string[] output = new string[Rows.Count + 3];
             int tabs = 0;
@@ -43,13 +44,13 @@ namespace Project_Two
                 }
                 else
                 {
-                    output[i] = ReturnRow(Rows[i], TakenPlayers);
+                    output[i] = ReturnRow(Rows[i]);
                 }
             }
             output[Rows.Count+1] = ReturnSeparator(TabLength * tabs);
             return output;
         }
-        public void PrintTable(List<Game> TakenPlayers = null)
+        public void PrintTable()
         {
             Console.Clear();
             int tabs = 0;
@@ -66,31 +67,18 @@ namespace Project_Two
                 }
                 else
                 {
-                    PrintRow(Rows[i], TakenPlayers);
+                    PrintRow(Rows[i]);
                 }
             }
         }
-        public void AddRow(Game FilledRow)
+        public void AddRow(string[] FilledRow)
         {
             this.Rows.Add(FilledRow);
             this.Rows.TrimExcess();
             this.checkRowStrings(FilledRow);
         }
-        /*public Game GetPlayerByName(string inputName)
+        private void checkRowStrings(string[] input)
         {
-            foreach(Game row in this.Rows)
-            {
-                List<Game> PlayerList = row.GetPlayerList();
-                if(PlayerList.Exists(p => p.Name == inputName))
-                {
-                    return PlayerList.Find(p => p.Name == inputName);
-                }
-            }
-            return null;
-        }*/
-        private void checkRowStrings(Game Game)
-        {
-            string[] input = Game.ReturnOriginalData();
             for(int i = 0; i<input.Length; i++)
             {
                 this.CalculateMinColumnLength(input[i], i);
@@ -155,69 +143,34 @@ namespace Project_Two
             }
             Console.WriteLine(outputString);
         }
-        private string ReturnRow(Game row, List<Game> TakenPlayer = null)
+        private string ReturnRow(string[] row)
         {
             string output = "";
-            //ConsoleColor originalColor = Console.ForegroundColor;
-            string[] GameData = row.ReturnOriginalData();
-            for (int i = 0; i < GameData.Length; i++)
+            for (int i = 0; i < row.Length; i++)
             {
-                if (i != GameData.Length - 1)
+                if (i != row.Length - 1)
                 {
-                    output += createTab(minColumnLength[i], GameData[i]);
+                    output += createTab(minColumnLength[i], row[i]);
                 }
                 else
                 {
-                    output += GameData[i];
+                    output += row[i];
                 }
             }
-            //List<Game> PlayerList = row.GetPlayerList();
-
-            /*for (int i = 0; i < PlayerList.Count; i++)
-            {
-                int j = i + 1;
-                if (i == 0)
-                {
-                    outputs[0] += createTab(minColumnLength[i], row.Label);
-                    outputs[1] += createTab(minColumnLength[i]);
-                    outputs[2] += createTab(minColumnLength[i]);
-                }
-                //foreach(Game player in TakenPlayer)
-                {
-                    if(GetPlayerByName(player.Name) != null)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                    }
-                //}
-                if (i != PlayerList.Count - 1)
-                {
-                    outputs[0] += createTab(minColumnLength[j], PlayerList[i].PrintName());
-                    outputs[1] += createTab(minColumnLength[j], PlayerList[i].PrintInstitution());
-                    outputs[2] += createTab(minColumnLength[j], PlayerList[i].PrintSalary());
-                }
-                else
-                {
-                    outputs[0] += PlayerList[i].PrintName();
-                    outputs[1] += PlayerList[i].PrintInstitution();
-                    outputs[2] += PlayerList[i].PrintSalary();
-                }
-            }*/
             return output;
         }
-        private void PrintRow(Game row, List<Game> TakenPlayer = null)
+        private void PrintRow(string[] row)
         {
             string output = "";
-            //ConsoleColor originalColor = Console.ForegroundColor;
-            string[] GameData = row.ReturnOriginalData();
-            for (int i = 0; i < GameData.Length; i++)
+            for (int i = 0; i < row.Length; i++)
             {
-                if (i != GameData.Length - 1)
+                if (i != row.Length - 1)
                 {
-                    output += createTab(minColumnLength[i], GameData[i]);
+                    output += createTab(minColumnLength[i], row[i]);
                 }
                 else
                 {
-                    output += GameData[i];
+                    output += row[i];
                 }
             }
             //List<Game> PlayerList = row.GetPlayerList();
