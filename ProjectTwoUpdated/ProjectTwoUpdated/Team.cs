@@ -53,7 +53,7 @@ namespace Project_Two
             string output = "";
             for (int i = 0; i < Quarterbacks.Count; i++)
             {
-                if (Quarterbacks.Count > 0)
+                if (i > 0)
                 {
                     output += " & ";
                 }
