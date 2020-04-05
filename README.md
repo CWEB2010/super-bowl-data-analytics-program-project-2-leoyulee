@@ -7,7 +7,8 @@ The program will try to read and write into the ProjectTwoUpdated folder by defa
 
 ## Usage
 When you launch this program, it will ask you to verify the location of the CSV file. The provided CSV file is properly formatted, thus refer to it if you need a reference.
-After verifying the file, it will ask you to designate the location of the output file and the name of it. If you're fine, you may accept these and continue.
+After verifying the file, it will ask you which file format you want. So far, it can only output either a text file or an HTML file.
+Then, will ask you to designate the location of the output file and the name of it. If you're fine, you may accept these and continue.
 The moment you accept the output location is the moment where the program outputs all of the requested queries to said location. From there, you can navigate the provided menus for the sake of convenience.
 
 
