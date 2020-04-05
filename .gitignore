@@ -259,3 +259,4 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/ProjectTwoUpdated/ProjectTwoUpdated/Super_Bowl_Project_Output.txt

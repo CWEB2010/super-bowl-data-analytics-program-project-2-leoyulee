@@ -42,7 +42,7 @@ namespace Project_Two
                 "The team(s) that won the most super bowls",
                 "The team(s) that lost the most super bowls",
                 "The super bowl that had the greatest point difference",
-                "The average attendance of all super bowls");
+                "The average attendance of all super bowls", "Exit");
             CreateTable(UserChoice, ref Games).PrintTable();
             Console.WriteLine("Would you like to see the other queries?");
             UserChoice = Prompt(false, "Yes", "No");
@@ -245,11 +245,17 @@ namespace Project_Two
                 Table Query = CreateTable(i, ref Games);
                 OutputArray.AddRange(Query.ReturnTableArray());
             }
-            foreach(string row in OutputArray)
+            System.IO.File.WriteAllLines(FilePath+ "Super_Bowl_Project_Output.txt", OutputArray.ToArray());
+            /*foreach(string row in OutputArray)
             {
-                //Console.WriteLine(row);//debug
+                Console.WriteLine(row);//debug
+            }*/
+            Console.Write("Finished outputting the file");
+            for(int i = 0; i<3; i++)
+            {
+                Console.Write(".");
+                Thread.Sleep(1000);
             }
-            Console.WriteLine("Finished outputting the file");
         }
         private static void Exit()
         {
