@@ -1,0 +1,39 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	
+	<style type="text/css">
+		body{
+			background-color: darkgrey;
+			font-family:Calibri,Candara,Segoe,"Segoe UI",Optima,Arial,sans-serif;
+		}
+		
+		header{
+			
+		}
+		
+		article{
+			background-color: lightgrey;
+			font-color: darkgrey;
+			padding:1%;
+			margin-left:7.5%;
+			margin-right:7.5%;
+			margin-top:2%;
+			margin-bottom:2%;
+			
+		}
+		
+		p{
+			font-size:16px;
+		)
+	</style>
+	
+	<title>Super Bowl Sorter Queries</title>
+</head>
+
+<body>
+	<header>
+		<h1>Super Bowl Sorter Queries</h1>
+	</header>

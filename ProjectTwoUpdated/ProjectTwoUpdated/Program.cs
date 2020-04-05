@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Reflection;
 using System.Collections.Generic;
 using Microsoft.VisualBasic.FileIO;
 
@@ -18,16 +19,24 @@ namespace Project_Two
             * or guide them through generating the file.
             **/
             List<Game> Games = new List<Game>();
-            string OutputFilePath;
+            string OutputFilePath,FileName,FileExtention;
             Console.WriteLine("Welcome to the Super Bowl Sorter!");
             Console.WriteLine("How would you like to access your data file?");
             string InputFilePath = GetFilePath(Prompt(false, "Use file at " + DefaultFilePath, "Input your own file path", "Exit"), DefaultFilePath);
             GetData(InputFilePath, ref Games);
+            Console.WriteLine("Which file format would you like the data to be outputted as?");
+            int UserChoice = Prompt(false, "HTML", "Text", "Exit");
+            FileExtention = GetFileExtension(UserChoice);
             Console.WriteLine("What would you like to name your output file?");
-            string FileName = GetFileName(Prompt(false, DefaultFileName +".txt", "Input your own file name", "Exit"), DefaultFileName);
+            FileName = GetFileName(Prompt(false, DefaultFileName + FileExtention, "Input your own file name", "Exit"), DefaultFileName, FileExtention);
             Console.WriteLine("Where would you like the output file to be?");
-            OutputFilePath = GetOutputPath(Prompt(false, "Output at " + DefaultOutputPath, "Input your own path", "Exit"), DefaultOutputPath, FileName);
-            OutputFile(OutputFilePath, FileName, ref Games);
+            OutputFilePath = GetOutputPath(Prompt(false, "Output at " + DefaultOutputPath, "Input your own path", "Exit"), DefaultOutputPath, FileName, FileExtention);
+            if (UserChoice == 1)
+                OutputHTMLFile(OutputFilePath, FileName, ref Games);
+            else if (UserChoice == 2)
+                OutputTextFile(OutputFilePath, FileName, ref Games);
+            else
+                Exit();
             AccessData(ref Games);
 
         }
@@ -50,13 +59,9 @@ namespace Project_Two
             Console.WriteLine("Would you like to see the other queries?");
             UserChoice = Prompt(false, "Yes", "No");
             if(UserChoice == 1)
-            {
                 AccessData(ref Games);
-            }
             else
-            {
                 Exit();
-            }
         }
         private static Table CreateTable(int UserChoice, ref List<Game> Games)
         {
@@ -240,7 +245,43 @@ namespace Project_Two
             }
             return output;
         }
-        private static void OutputFile(string FilePath, string FileName, ref List<Game> Games)
+        private static void OutputHTMLFile(string FilePath, string FileName, ref List<Game> Games)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            string topFile, botFile;
+            using (Stream topStream = assembly.GetManifestResourceStream("Project_Two.TopHTML.txt"))
+            using(StreamReader topReader = new StreamReader(topStream))
+            {
+                topFile = topReader.ReadToEnd();
+            }
+            using (Stream botStream = assembly.GetManifestResourceStream("Project_Two.BotHTML.txt"))
+            using (StreamReader botReader = new StreamReader(botStream))
+            {
+                botFile = botReader.ReadToEnd();
+            }
+            List<string> OutputArray = new List<string>();
+            OutputArray.Add(topFile);
+            for (int i = 0; i < 10; i++)
+            {
+                Table Query = CreateTable(i, ref Games);
+                OutputArray.AddRange(Query.ReturnHTMLArray());
+            }
+            OutputArray.Add(botFile);
+            if (CheckFilePath(FilePath + FileName + ".txt"))
+            {
+                Console.WriteLine("A file with the same name of " + FileName + ".txt" + " was found at your specified location! What do you want to do?");
+                int UserChoice = Prompt(false, "Overwrite the file", "Change the output file name", "Change the output file path", "Change both output file name and path", "Exit");
+                DebugOutput(UserChoice, ref FileName, ref FilePath, ".html");
+            }
+            Write(ref FilePath, ref FileName, OutputArray.ToArray());
+            /*foreach(string row in OutputArray)
+            {
+                Console.WriteLine(row);//debug
+            }*/
+            Console.WriteLine("\nDone!");
+            Thread.Sleep(1000);
+        }
+        private static void OutputTextFile(string FilePath, string FileName, ref List<Game> Games)
         {
             List<string> OutputArray = new List<string>();
             for(int i = 0; i<10; i++)
@@ -252,7 +293,7 @@ namespace Project_Two
             {
                 Console.WriteLine("A file with the same name of " + FileName + ".txt" + " was found at your specified location! What do you want to do?");
                 int UserChoice = Prompt(false, "Overwrite the file", "Change the output file name", "Change the output file path", "Change both output file name and path", "Exit");
-                DebugOutput(UserChoice, ref FileName, ref FilePath);
+                DebugOutput(UserChoice, ref FileName, ref FilePath, ".txt");
             }
             Write(ref FilePath, ref FileName, OutputArray.ToArray());
             /*foreach(string row in OutputArray)
@@ -284,24 +325,24 @@ namespace Project_Two
                 Thread.Sleep(1000);
             }
         }
-        private static void DebugOutput(int UserChoice, ref string FileName, ref string FilePath)
+        private static void DebugOutput(int UserChoice, ref string FileName, ref string FilePath, string FileExtention)
         {
             if (UserChoice == 2)
             {
                 Console.WriteLine("What would you like to name your output file?");
-                FileName = GetFileName(Prompt(false, DefaultFileName + ".txt", "Input your own file name", "Exit"), DefaultFileName);
+                FileName = GetFileName(Prompt(false, DefaultFileName + FileExtention, "Input your own file name", "Exit"), DefaultFileName, FileExtention);
             }
             if (UserChoice == 3)
             {
                 Console.WriteLine("Where would you like the output file to be?");
-                FilePath = GetOutputPath(Prompt(false, "Output at " + DefaultOutputPath, "Input your own path", "Exit"), DefaultOutputPath, FileName);
+                FilePath = GetOutputPath(Prompt(false, "Output at " + DefaultOutputPath, "Input your own path", "Exit"), DefaultOutputPath, FileName, FileExtention);
             }
             if (UserChoice == 4)
             {
                 Console.WriteLine("What would you like to name your output file?");
-                FileName = GetFileName(Prompt(false, DefaultFileName + ".txt", "Input your own file name", "Exit"), DefaultFileName);
+                FileName = GetFileName(Prompt(false, DefaultFileName + FileExtention, "Input your own file name", "Exit"), DefaultFileName, FileExtention);
                 Console.WriteLine("Where would you like the output file to be?");
-                FilePath = GetOutputPath(Prompt(false, "Output at " + DefaultOutputPath, "Input your own path", "Exit"), DefaultOutputPath, FileName);
+                FilePath = GetOutputPath(Prompt(false, "Output at " + DefaultOutputPath, "Input your own path", "Exit"), DefaultOutputPath, FileName, FileExtention);
             }
             if (UserChoice == 5)
             {
@@ -314,7 +355,20 @@ namespace Project_Two
             Thread.Sleep(2500);
             Environment.Exit(0);
         }
-        private static string GetOutputPath(int UserChoice, string FilePath, string FileName)
+        private static string GetFileExtension(int UserChoice)
+        {
+            if (UserChoice == 3)
+                Exit();
+            string output;
+            if (UserChoice == 2)
+                output = ".txt";
+            else
+                output = ".html";
+            Console.Clear();
+            Console.WriteLine("The file will be outputted as a " + output);
+            return output;
+        }
+        private static string GetOutputPath(int UserChoice, string FilePath, string FileName, string FileExtention)
         {
             if (UserChoice == 2)
             {
@@ -325,12 +379,12 @@ namespace Project_Two
             {
                 Exit();
             }
-            Console.WriteLine("The file will be outputted at " + FilePath + FileName +".txt");
+            Console.WriteLine("The file will be outputted at " + FilePath + FileName + FileExtention);
             Console.WriteLine("Confirm?");
             UserChoice = Prompt(false, "Yes", "No", "Exit");
             if(UserChoice == 2)
             {
-                GetOutputPath(UserChoice, FilePath, FileName);
+                GetOutputPath(UserChoice, FilePath, FileName, FileExtention);
             }
             if(UserChoice == 3)
             {
@@ -339,7 +393,7 @@ namespace Project_Two
             Console.Clear();
             return FilePath;
         }
-        private static string GetFileName(int UserChoice, string FileName)
+        private static string GetFileName(int UserChoice, string FileName, string FileExtention)
         {
             if (UserChoice == 2)
             {
@@ -350,12 +404,12 @@ namespace Project_Two
             {
                 Exit();
             }
-            Console.WriteLine("The file will be named as " + FileName + ".txt");
+            Console.WriteLine("The file will be named as " + FileName + FileExtention);
             Console.WriteLine("Confirm?");
             UserChoice = Prompt(false, "Yes", "No", "Exit");
             if (UserChoice == 2)
             {
-                GetFileName(UserChoice, FileName);
+                GetFileName(UserChoice, FileName, FileExtention);
             }
             if (UserChoice == 3)
             {
@@ -388,7 +442,7 @@ namespace Project_Two
         {
             try
             {
-                if (File.Exists(FilePath))
+                if (!File.Exists(FilePath))
                 {
                     Console.WriteLine("File couldn't be found at {0}", FilePath);
                     return false;
