@@ -33,8 +33,8 @@ namespace Project_Two
         public string[] ReturnHTMLArray()
         {
             List<string> output = new List<string>();
-            output.Add("<h2>"+Title+"</h2>");
             output.Add("<table>"); // style=\"width:100%\"
+            output.Add("<caption>" + Title + "</caption>");
             output.Add("\t<tr>");
             foreach(string head in Header)
             {
