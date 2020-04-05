@@ -53,14 +53,14 @@ namespace Project_Two
         public void PrintTable()
         {
             Console.Clear();
-            int tabs = 0;
+            int tabs = 1;
             foreach (int column in minColumnLength)
             {
                 tabs += column;
             }
+            PrintSeparator(TabLength * tabs);
             for (int i = -1; i < Rows.Count; i++)
             {
-                PrintSeparator(TabLength * tabs);
                 if (i == -1)
                 {
                     PrintHeader();
@@ -70,6 +70,7 @@ namespace Project_Two
                     PrintRow(Rows[i]);
                 }
             }
+            PrintSeparator(TabLength * tabs);
         }
         public void AddRow(string[] FilledRow)
         {
@@ -100,7 +101,7 @@ namespace Project_Two
             {
                 output += "-";
             }
-            return "\n" + output;
+            return output;
         }
         private void PrintSeparator(int length)
         {
@@ -109,7 +110,7 @@ namespace Project_Two
             {
                 output += "-";
             }
-            Console.WriteLine("\n" + output);
+            Console.WriteLine(output);
         }
         private string ReturnHeader()
         {
