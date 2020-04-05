@@ -10,10 +10,16 @@
 			font-family:Calibri,Candara,Segoe,"Segoe UI",Optima,Arial,sans-serif;
 		}
 		
-		header{
-			
+		table, th, td {
+			border: 1px solid black;
+			border-collapse: collapse;
 		}
-		
+		th, td {
+			padding:4px;
+		}
+		header{
+			margin-left:2.5%;
+		}
 		article{
 			background-color: lightgrey;
 			font-color: darkgrey;
