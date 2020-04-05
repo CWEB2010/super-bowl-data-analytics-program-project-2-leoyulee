@@ -1,4 +1,17 @@
-# Super Bowl Data Analytics Program (Project 2)
+# Super Bowl Sorter!
+
+Welcome to the Super Bowl Sorter! Here you can get access to some nicely sorted Super Bowl data, alongside sort future/past data too!
+
+The main solution file is located in the "ProjectTwoUpdated" folder. The other folder "Project_Two (Deprecated)" is there to be documented in time, so please don't open that unless you want to see the development history.
+The program will try to read and write into the ProjectTwoUpdated folder by default. You may specify your own path to the file if you wish.
+
+###Usage
+When you launch this program, it will ask you to verify the location of the CSV file. The provided CSV file is properly formatted, thus refer to it if you need a reference.
+After verifying the file, it will ask you to designate the location of the output file and the name of it. If you're fine, you may accept these and continue.
+The moment you accept the output location is the moment where the program outputs all of the requested queries to said location. From there, you can navigate the provided menus for the sake of convenience.
+
+
+# Super Bowl Data Analytics Program (Project 2) Requirements
 
 Your job for this project is to create an application that will quantify and summarize data from the excel sheet titled “Super_Bowl_Project.csv”.  Construct an application that will read data from the Super_Bowl_Project.csv spreadsheet and assign each of the row items as an object within your program.  Once your program has created an instance for each row within the spreadsheet begin to manipulate the data according to the bullet points below.  Once you have constructed code for the following bullet points generate a text file that outputs the quantified and summarized data.
 
