@@ -11,6 +11,7 @@ namespace Project_Two
     {
         static readonly string DefaultFilePath = Path.GetFullPath(@"..\..\..\") + "Super_Bowl_Project.csv";
         static readonly string DefaultOutputPath = Path.GetFullPath(@"..\..\..\");
+        static readonly string DefaultFileName = "Super_Bowl_Project_Output";
         static void Main(string[] args)
         {
             /**Your application should allow the end user to pass end a file path for output 
@@ -20,11 +21,13 @@ namespace Project_Two
             string OutputFilePath;
             Console.WriteLine("Welcome to the Super Bowl Sorter!");
             Console.WriteLine("How would you like to access your data file?");
-            string InputFilePath = GetFilePath(Prompt(false, "Use file at " + DefaultFilePath, "Input your own file path"), DefaultFilePath);
+            string InputFilePath = GetFilePath(Prompt(false, "Use file at " + DefaultFilePath, "Input your own file path", "Exit"), DefaultFilePath);
             GetData(InputFilePath, ref Games);
+            Console.WriteLine("What would you like to name your output file?");
+            string FileName = GetFileName(Prompt(false, DefaultFileName +".txt", "Input your own file name", "Exit"), DefaultFileName);
             Console.WriteLine("Where would you like the output file to be?");
-            OutputFilePath = GetOutputPath(Prompt(false, "Output at " + DefaultOutputPath, "Input your own path"), DefaultOutputPath);
-            OutputFile(OutputFilePath, ref Games);
+            OutputFilePath = GetOutputPath(Prompt(false, "Output at " + DefaultOutputPath, "Input your own path", "Exit"), DefaultOutputPath, FileName);
+            OutputFile(OutputFilePath, FileName, ref Games);
             AccessData(ref Games);
 
         }
@@ -237,7 +240,7 @@ namespace Project_Two
             }
             return output;
         }
-        private static void OutputFile(string FilePath, ref List<Game> Games)
+        private static void OutputFile(string FilePath, string FileName, ref List<Game> Games)
         {
             List<string> OutputArray = new List<string>();
             for(int i = 0; i<10; i++)
@@ -245,39 +248,75 @@ namespace Project_Two
                 Table Query = CreateTable(i, ref Games);
                 OutputArray.AddRange(Query.ReturnTableArray());
             }
-            System.IO.File.WriteAllLines(FilePath+ "Super_Bowl_Project_Output.txt", OutputArray.ToArray());
+            System.IO.File.WriteAllLines(FilePath+ FileName +".txt", OutputArray.ToArray());
             /*foreach(string row in OutputArray)
             {
                 Console.WriteLine(row);//debug
             }*/
-            Console.Write("Finished outputting the file");
+            Console.Write("Writing Data File");
             for(int i = 0; i<3; i++)
             {
                 Console.Write(".");
                 Thread.Sleep(1000);
             }
+            Console.WriteLine("\nDone!");
+            Thread.Sleep(1000);
         }
         private static void Exit()
         {
             Console.WriteLine("Thank you for using the Super Bowl Sorter!");
-            Thread.Sleep(3000);
+            Thread.Sleep(2500);
             Environment.Exit(0);
         }
-        private static string GetOutputPath(int UserChoice, string FilePath)
+        private static string GetOutputPath(int UserChoice, string FilePath, string FileName)
         {
             if (UserChoice == 2)
             {
                 Console.WriteLine("Input the output location:");
                 FilePath = GetStrResponse();
             }
-            Console.WriteLine("The file will be outputted at " + FilePath + "Super_Bowl_Project_Output.txt");
+            if (UserChoice == 3)
+            {
+                Exit();
+            }
+            Console.WriteLine("The file will be outputted at " + FilePath + FileName);
             Console.WriteLine("Confirm?");
-            UserChoice = Prompt(false, "Yes", "No");
+            UserChoice = Prompt(false, "Yes", "No", "Exit");
             if(UserChoice == 2)
             {
-                GetOutputPath(UserChoice, FilePath);
+                GetOutputPath(UserChoice, FilePath, FileName);
             }
+            if(UserChoice == 3)
+            {
+                Exit();
+            }
+            Console.Clear();
             return FilePath;
+        }
+        private static string GetFileName(int UserChoice, string FileName)
+        {
+            if (UserChoice == 2)
+            {
+                Console.WriteLine("Input the file name:");
+                FileName = GetStrResponse();
+            }
+            if (UserChoice == 3)
+            {
+                Exit();
+            }
+            Console.WriteLine("The file will be named as " + FileName + ".txt");
+            Console.WriteLine("Confirm?");
+            UserChoice = Prompt(false, "Yes", "No", "Exit");
+            if (UserChoice == 2)
+            {
+                GetFileName(UserChoice, FileName);
+            }
+            if (UserChoice == 3)
+            {
+                Exit();
+            }
+            Console.Clear();
+            return FileName;
         }
         private static string GetFilePath(int UserChoice, string FilePath)
         {
@@ -286,12 +325,17 @@ namespace Project_Two
                 Console.WriteLine("Input the file location of the data file:");
                 FilePath = GetStrResponse();
             }
+            if (UserChoice == 3)
+            {
+                Exit();
+            }
             if (!CheckFilePath(FilePath))
             {
                 Console.WriteLine("Would you like to try to read the file at {0} again?", FilePath);
                 UserChoice = Prompt(false, "Yes", "No");
                 GetFilePath(UserChoice, FilePath);
             }
+            Console.Clear();
             return FilePath;
         }
         private static bool CheckFilePath(string FilePath)
