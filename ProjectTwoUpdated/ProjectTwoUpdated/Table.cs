@@ -30,6 +30,29 @@ namespace Project_Two
                 this.AddRow(row);
             }
         }
+        public string[] ReturnHTMLArray()
+        {
+            List<string> output = new List<string>();
+            output.Add("<h2>"+Title+"</h2>");
+            output.Add("<table style=\"width:100%\"");
+            output.Add("\t<tr>");
+            foreach(string head in Header)
+            {
+                output.Add("\t\t<th>" + head + "</th>");
+            }
+            output.Add("\t</tr>");
+            foreach(string[] row in Rows)
+            {
+                output.Add("<tr>");
+                foreach(string data in row)
+                {
+                    output.Add("\t\t<td>" + data + "</td>");
+                }
+                output.Add("\t</tr>");
+            }
+            output.Add("</table>");
+            return output.ToArray();
+        }
         public string[] ReturnTableArray()
         {
             string[] output = new string[Rows.Count + 4];
