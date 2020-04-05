@@ -30,7 +30,7 @@ namespace Project_Two
         }
         private static void AccessData(ref List<Game> Games)
         {
-            //Console.Clear();
+            Console.Clear();
             Console.WriteLine("What pieces of data would you like to see?");
             int UserChoice = Prompt(true,
                 "Winning Teams",
