@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using Microsoft.VisualBasic.FileIO;
 
@@ -7,7 +8,7 @@ namespace Project_Two
 {
     class Program
     {
-        static readonly string DefaultFilePath = Path.GetFullPath(@"..\..\..\")+ "Super_Bowl_Project.csv";
+        static readonly string DefaultFilePath = Path.GetFullPath(@"..\..\..\") + "Super_Bowl_Project.csv";
         static readonly string DefaultOutputPath = Path.GetFullPath(@"..\..\..\");
         static void Main(string[] args)
         {
@@ -24,7 +25,91 @@ namespace Project_Two
             OutputFilePath = GetOutputPath(Prompt(false, "Output at " + DefaultOutputPath, "Input your own path"), DefaultOutputPath);
             OutputFile(OutputFilePath);
             Console.WriteLine("What pieces of data would you like to see?");
-            int UserChoice = Prompt(false, "Winning Teams", "Top five attended super bowls", "The state that hosted the most super bowls", "List of players who won MVP more than once", "The coach that lost the most super bowls", "The coach that won the most super bowls", "The team(s) that won the most super bowls", "The super bowl that had the greatest point difference", "The average attendance of all super bowls");
+            int UserChoice = Prompt(true,
+                "Winning Teams",
+                "Top five attended super bowls",
+                "The state that hosted the most super bowls",
+                "List of players who won MVP more than once",
+                "The coach that lost the most super bowls",
+                "The coach that won the most super bowls",
+                "The team(s) that won the most super bowls",
+                "The super bowl that had the greatest point difference",
+                "The average attendance of all super bowls");
+            CreateTable(UserChoice, Games).PrintTable();
+        }
+        private static Table CreateTable(int UserChoice, List<Game> Games)
+        {
+            Table output = null;
+            List<string[]> AssembledRows = new List<string[]>();
+            if (UserChoice == 0)
+            {
+                foreach (Game game in Games)
+                {
+                    string[] row = new string[] { game.WinningTeam.Name, game.WinningTeam.Year.ToString(), game.WinningTeam.QBToString(), game.WinningTeam.Coach, game.MVP, (game.WinningTeam.Points - game.LosingTeam.Points).ToString() };
+                    AssembledRows.Add(row);
+                }
+                AssembledRows.TrimExcess();
+                output = new Table(new string[] { "Winning Team", "Year", "Winning Quaterback(s)", "Winning Coach", "MVP", "Point difference" }, AssembledRows);
+            }
+            else if (UserChoice == 1)
+            {
+                var AttendenceQuery = from game in Games
+                                      orderby game.Attendance descending
+                                      select game;
+                Game[] QueryArray = AttendenceQuery.ToArray();
+                for(int i = 0; i < 5; i++)
+                {
+                    Game focusedGame = QueryArray[i];
+                    string[] row = new string[] { focusedGame.Attendance.ToString(), focusedGame.Year.ToString(), focusedGame.WinningTeam.Name, focusedGame.LosingTeam.Name, focusedGame.City, focusedGame.State, focusedGame.Stadium };
+                    AssembledRows.Add(row);
+                }
+                AssembledRows.TrimExcess();
+                output = new Table(new string[] { "Attendance", "Year", "Winning Team", "Losing Team", "City", "State", "Stadium"}, AssembledRows);
+            }
+            else if (UserChoice == 2)
+            {
+                var MostHostedQuery = from game in Games
+                                      group game by game.State into StateGroups
+                                      orderby StateGroups.Count() ascending
+                                      select StateGroups;
+                var State = MostHostedQuery.First();
+                foreach(Game game in State)
+                {
+                    string[] row = new string[] { game.City, game.State, game.Stadium };
+                    AssembledRows.Add(row);
+                }
+                AssembledRows.TrimExcess();
+                output = new Table(new string[] { "Cities", "State", "Stadiums" }, AssembledRows);
+            }
+            else if (UserChoice == 3)
+            {
+
+            }
+            else if (UserChoice == 4)
+            {
+
+            }
+            else if (UserChoice == 5)
+            {
+
+            }
+            else if (UserChoice == 6)
+            {
+
+            }
+            else if (UserChoice == 7)
+            {
+
+            }
+            else if (UserChoice == 8)
+            {
+
+            }
+            else if (UserChoice == 9)
+            {
+
+            }
+            return output;
         }
         private static void OutputFile(string FilePath)
         {
