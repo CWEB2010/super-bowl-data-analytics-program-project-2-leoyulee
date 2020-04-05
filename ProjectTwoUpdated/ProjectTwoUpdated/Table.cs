@@ -33,24 +33,30 @@ namespace Project_Two
         public string[] ReturnHTMLArray()
         {
             List<string> output = new List<string>();
-            output.Add("<table>"); // style=\"width:100%\"
-            output.Add("<caption>" + Title + "</caption>");
-            output.Add("\t<tr>");
+            output.Add("\t<article>");
+            output.Add("\t\t<table>"); // style=\"width:100%\"
+            output.Add("\t\t\t<caption>" + Title + "</caption>");
+            output.Add("\t\t\t<thead>");
+            output.Add("\t\t\t\t<tr>");
             foreach(string head in Header)
             {
-                output.Add("\t\t<th>" + head + "</th>");
+                output.Add("\t\t\t\t\t<th>" + head + "</th>");
             }
-            output.Add("\t</tr>");
+            output.Add("\t\t\t\t</tr>");
+            output.Add("\t\t\t</thead>");
+            output.Add("\t\t\t<tbody>");
             foreach(string[] row in Rows)
             {
-                output.Add("<tr>");
+                output.Add("\t\t\t\t<tr>");
                 foreach(string data in row)
                 {
-                    output.Add("\t\t<td>" + data + "</td>");
+                    output.Add("\t\t\t\t\t<td>" + data + "</td>");
                 }
-                output.Add("\t</tr>");
+                output.Add("\t\t\t\t</tr>");
             }
-            output.Add("</table>");
+            output.Add("\t\t\t</tbody>");
+            output.Add("\t\t</table>");
+            output.Add("\t</article>");
             return output.ToArray();
         }
         public string[] ReturnTableArray()
