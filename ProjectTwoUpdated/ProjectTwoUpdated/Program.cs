@@ -388,12 +388,16 @@ namespace Project_Two
         {
             try
             {
-                File.Exists(FilePath);
+                if (File.Exists(FilePath))
+                {
+                    Console.WriteLine("File couldn't be found at {0}", FilePath);
+                    return false;
+                }
             }
-            catch
+            catch(Exception ex)
             {
                 if (test)
-                    Console.WriteLine("File couldn't be found at {0}", FilePath);
+                    Console.WriteLine("File.Exists({0}) threw an exception. Error message: ", FilePath, ex.Message);
                 return false;
             }
             try
@@ -416,11 +420,13 @@ namespace Project_Two
                         Console.WriteLine("File doesn't contain the correct amount of headers. Refer to README.");
                     return false;
                 }
+                while (!testParser.EndOfData)
+                    Game.DataToObject(testParser.ReadFields());
             }
-            catch
+            catch (Exception e)
             {
                 if (test)
-                    Console.WriteLine("File cannot be read by the TextFieldParser.");
+                    Console.WriteLine("File cannot be read by the TextFieldParser. Make sure the file is formatted correctly.\nError: {0}",e.Message);
                 return false;
             }
             return true;
@@ -437,7 +443,7 @@ namespace Project_Two
             {
                 Console.WriteLine(header);
             }*/
-                while (!parser.EndOfData)
+            while (!parser.EndOfData)
             {
                 string[] GameData = parser.ReadFields();
                 Game thisGame = Game.DataToObject(GameData);
