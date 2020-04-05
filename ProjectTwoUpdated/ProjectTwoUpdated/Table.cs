@@ -9,6 +9,7 @@ namespace Project_Two
     {
         private static readonly int TabLength = 8;
         private static readonly int minCharBeforeTab = 4;
+        private readonly String Title;
         private readonly String[] Header;
         private int[] minColumnLength; //minColumnLength = new int[Header.Length]
         private List<string[]> Rows;
@@ -17,10 +18,12 @@ namespace Project_Two
             this.Header = Headers;
             this.Rows = new List<string[]>();
         }
-        public Table(String[] Headers, List<string[]> FilledRows)
+        public Table(String Title, String[] Headers, List<string[]> FilledRows)
         {
+            this.Title = Title;
             this.Header = Headers;
             minColumnLength = new int[Header.Length];
+            checkRowStrings(Headers);
             this.Rows = new List<string[]>();
             foreach (string[] row in FilledRows)
             {
@@ -29,36 +32,38 @@ namespace Project_Two
         }
         public string[] ReturnTableArray()
         {
-            string[] output = new string[Rows.Count + 3];
+            string[] output = new string[Rows.Count + 4];
             int tabs = 0;
             foreach (int column in minColumnLength)
             {
                 tabs += column;
             }
             output[0] = ReturnSeparator(TabLength * tabs);
-            for (int i = 1; i < Rows.Count+2; i++)
+            output[1] = Title;
+            for (int i = 2; i < Rows.Count+3; i++)
             {
-                if (i == 1)
+                if (i == 2)
                 {
                     output[i] = ReturnHeader();
                 }
                 else
                 {
-                    output[i] = ReturnRow(Rows[i]);
+                    output[i] = ReturnRow(Rows[i-3]);
                 }
             }
-            output[Rows.Count+1] = ReturnSeparator(TabLength * tabs);
+            output[Rows.Count+3] = ReturnSeparator(TabLength * tabs);
             return output;
         }
         public void PrintTable()
         {
             Console.Clear();
-            int tabs = 1;
+            int tabs = 0;
             foreach (int column in minColumnLength)
             {
                 tabs += column;
             }
             PrintSeparator(TabLength * tabs);
+            Console.WriteLine(Title);
             for (int i = -1; i < Rows.Count; i++)
             {
                 if (i == -1)
