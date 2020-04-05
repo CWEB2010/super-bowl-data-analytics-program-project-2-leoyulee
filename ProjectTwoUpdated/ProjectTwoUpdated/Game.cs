@@ -224,6 +224,25 @@ namespace Project_Two
             LargestNumber = 0;
             foreach (char r in RomanNumeral)
             {
+                if (r == 'M')
+                {
+                    Output.Add(1000);
+                    if (LargestNumber < 1000)
+                        LargestNumber = 1000;
+                }
+                if (r == 'D')
+                {
+                    Output.Add(500);
+                    if (LargestNumber < 500)
+                        LargestNumber = 500;
+                }
+                if (r == 'C')
+                {
+                    Output.Add(100);
+                    if (LargestNumber < 100)
+                        LargestNumber = 100;
+                }
+                else
                 if (r == 'L')
                 {
                     Output.Add(50);
