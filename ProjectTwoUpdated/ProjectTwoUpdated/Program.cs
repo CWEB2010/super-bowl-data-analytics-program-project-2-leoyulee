@@ -12,7 +12,7 @@ namespace Project_Two
         static readonly string DefaultFilePath = Path.GetFullPath(@"..\..\..\") + "Super_Bowl_Project.csv";
         static readonly string DefaultOutputPath = Path.GetFullPath(@"..\..\..\");
         static readonly string DefaultFileName = "Super_Bowl_Project_Output";
-        static void Main(string[] args)
+        static void Main()
         {
             /**Your application should allow the end user to pass end a file path for output 
             * or guide them through generating the file.
