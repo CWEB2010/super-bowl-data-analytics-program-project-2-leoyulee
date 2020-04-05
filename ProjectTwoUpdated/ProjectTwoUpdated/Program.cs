@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Collections.Generic;
 using Microsoft.VisualBasic.FileIO;
 
@@ -17,13 +18,19 @@ namespace Project_Two
             **/
             List<Game> Games = new List<Game>();
             string OutputFilePath;
-            Console.WriteLine("Welcome to the Superbowl [PC]superProgram!");
+            Console.WriteLine("Welcome to the Super Bowl Sorter!");
             Console.WriteLine("How would you like to access your data file?");
             string InputFilePath = GetFilePath(Prompt(false, "Use file at " + DefaultFilePath, "Input your own file path"), DefaultFilePath);
             GetData(InputFilePath, ref Games);
             Console.WriteLine("Where would you like the output file to be?");
             OutputFilePath = GetOutputPath(Prompt(false, "Output at " + DefaultOutputPath, "Input your own path"), DefaultOutputPath);
             OutputFile(OutputFilePath);
+            AccessData(ref Games);
+
+        }
+        private static void AccessData(ref List<Game> Games)
+        {
+            Console.Clear();
             Console.WriteLine("What pieces of data would you like to see?");
             int UserChoice = Prompt(true,
                 "Winning Teams",
@@ -33,11 +40,24 @@ namespace Project_Two
                 "The coach that lost the most super bowls",
                 "The coach that won the most super bowls",
                 "The team(s) that won the most super bowls",
+                "The team(s) that lost the most super bowls",
                 "The super bowl that had the greatest point difference",
                 "The average attendance of all super bowls");
-            CreateTable(UserChoice, Games).PrintTable();
+            CreateTable(UserChoice, ref Games).PrintTable();
+            Console.WriteLine("Would you like to see the other queries?");
+            UserChoice = Prompt(false, "Yes", "No");
+            if(UserChoice == 1)
+            {
+                AccessData(ref Games);
+            }
+            else
+            {
+                Console.WriteLine("Thank you for using the Super Bowl Sorter!");
+                Thread.Sleep(3000);
+                Environment.Exit(0);
+            }
         }
-        private static Table CreateTable(int UserChoice, List<Game> Games)
+        private static Table CreateTable(int UserChoice, ref List<Game> Games)
         {
             Table output = null;
             List<string[]> AssembledRows = new List<string[]>();
@@ -69,9 +89,9 @@ namespace Project_Two
             else if (UserChoice == 2)
             {
                 var MostHostedQuery = from game in Games
-                                      group game by game.State into StateGroups
-                                      orderby StateGroups.Count() ascending
-                                      select StateGroups;
+                                 group game by game.State into StateGroups
+                                 orderby StateGroups.Count() descending
+                                 select StateGroups;
                 var State = MostHostedQuery.First();
                 foreach(Game game in State)
                 {
@@ -83,31 +103,97 @@ namespace Project_Two
             }
             else if (UserChoice == 3)
             {
-
+                //Generate a list of players who won MVP more than once and output the following:
+                /*Name of MVP
+                The winning team
+                The losing team*/
+                var MVPQuery = from game in Games
+                               group game by game.MVP into Players
+                               where Players.Count() > 1
+                               orderby Players.Count() descending
+                               select Players;
+                foreach (var player in MVPQuery)
+                {
+                    foreach(var game in player)
+                    {
+                        string[] row = new string[] { game.MVP, game.WinningTeam.Name, game.LosingTeam.Name };
+                        AssembledRows.Add(row);
+                    }
+                }
+                AssembledRows.TrimExcess();
+                output = new Table(new string[] { "Name of MVP", "Winning Team", "Losing Team" }, AssembledRows);
             }
             else if (UserChoice == 4)
             {
-
+                //Which coach lost the most super bowls?
+                var CoachLostQuery = from game in Games
+                                     group game by game.LosingTeam.Coach into Coaches
+                                     orderby Coaches.Count() descending
+                                     select Coaches;
+                var Coach = CoachLostQuery.First();
+                foreach (Game game in Coach)
+                {
+                    string[] row = new string[] { game.LosingTeam.Coach, game.LosingTeam.Name, game.LosingTeam.Year.ToString() };
+                    AssembledRows.Add(row);
+                }
+                AssembledRows.TrimExcess();
+                output = new Table(new string[] { "Name of Coach", "Losing Team", "Year" }, AssembledRows);
             }
             else if (UserChoice == 5)
             {
-
+                //Which coach won the most super bowls?
+                var CoachWinQuery = from game in Games
+                                     group game by game.WinningTeam.Coach into Coaches
+                                     orderby Coaches.Count() descending
+                                     select Coaches;
+                var Coach = CoachWinQuery.First();
+                foreach (Game game in Coach)
+                {
+                    string[] row = new string[] { game.WinningTeam.Coach, game.WinningTeam.Name, game.WinningTeam.Year.ToString() };
+                    AssembledRows.Add(row);
+                }
+                AssembledRows.TrimExcess();
+                output = new Table(new string[] { "Name of Coach", "Winning Team", "Year" }, AssembledRows);
             }
             else if (UserChoice == 6)
             {
-
+                //Which team(s) won the most super bowls?
+                var TeanWinQuery = from game in Games
+                                     group game by game.WinningTeam.Name into Teams
+                                     orderby Teams.Count() descending
+                                     select Teams;
+                var Team = TeanWinQuery.First();
+                foreach (Game game in Team)
+                {
+                    string[] row = new string[] { game.WinningTeam.Name, game.WinningTeam.Year.ToString() };
+                    AssembledRows.Add(row);
+                }
+                AssembledRows.TrimExcess();
+                output = new Table(new string[] { "Winning Team", "Year" }, AssembledRows);
             }
             else if (UserChoice == 7)
             {
-
+                //Which team(s) lost the most super bowls?
+                var TeanLoseQuery = from game in Games
+                                   group game by game.LosingTeam.Name into Teams
+                                   orderby Teams.Count() descending
+                                   select Teams;
+                var Team = TeanLoseQuery.First();
+                foreach (Game game in Team)
+                {
+                    string[] row = new string[] { game.LosingTeam.Name, game.LosingTeam.Year.ToString() };
+                    AssembledRows.Add(row);
+                }
+                AssembledRows.TrimExcess();
+                output = new Table(new string[] { "Losing Team", "Year" }, AssembledRows);
             }
             else if (UserChoice == 8)
             {
-
+                //Which Super bowl had the greatest point difference?
             }
             else if (UserChoice == 9)
             {
-
+                //What is the average attendance of all super bowls?
             }
             return output;
         }
@@ -195,7 +281,7 @@ namespace Project_Two
             {
                 Console.WriteLine(header);
             }*/
-            while (!parser.EndOfData)
+                while (!parser.EndOfData)
             {
                 string[] GameData = parser.ReadFields();
                 Game thisGame = Game.DataToObject(GameData);
