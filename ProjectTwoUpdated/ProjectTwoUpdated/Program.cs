@@ -158,11 +158,11 @@ namespace Project_Two
             else if (UserChoice == 6)
             {
                 //Which team(s) won the most super bowls?
-                var TeanWinQuery = from game in Games
+                var TeamWinQuery = from game in Games
                                      group game by game.WinningTeam.Name into Teams
                                      orderby Teams.Count() descending
                                      select Teams;
-                var Team = TeanWinQuery.First();
+                var Team = TeamWinQuery.First();
                 foreach (Game game in Team)
                 {
                     string[] row = new string[] { game.WinningTeam.Name, game.WinningTeam.Year.ToString() };
@@ -174,11 +174,11 @@ namespace Project_Two
             else if (UserChoice == 7)
             {
                 //Which team(s) lost the most super bowls?
-                var TeanLoseQuery = from game in Games
+                var TeamLoseQuery = from game in Games
                                    group game by game.LosingTeam.Name into Teams
                                    orderby Teams.Count() descending
                                    select Teams;
-                var Team = TeanLoseQuery.First();
+                var Team = TeamLoseQuery.First();
                 foreach (Game game in Team)
                 {
                     string[] row = new string[] { game.LosingTeam.Name, game.LosingTeam.Year.ToString() };
@@ -190,10 +190,30 @@ namespace Project_Two
             else if (UserChoice == 8)
             {
                 //Which Super bowl had the greatest point difference?
+                var ScoreQuery = from game in Games
+                                 let diff = game.WinningTeam.Points - game.LosingTeam.Points
+                                 orderby diff descending
+                                 select new { game.WinningTeam.Name, game.WinningTeam.Year, diff};
+                var Game = ScoreQuery.First();
+                foreach (var game in ScoreQuery)
+                {
+                    string[] row = new string[] { game.Name, game.Year.ToString(), game.diff.ToString() };
+                    AssembledRows.Add(row);
+                }
+                AssembledRows.TrimExcess();
+                output = new Table(new string[] { "Winning Team", "Year", "Point difference" }, AssembledRows);
             }
             else if (UserChoice == 9)
             {
                 //What is the average attendance of all super bowls?
+                var AttendanceQuery = from game in Games
+                              let TotalAttendance = +game.Attendance
+                              select TotalAttendance;
+                double averageAttendance = AttendanceQuery.Average();
+                AssembledRows.Add(new string[] { averageAttendance.ToString() });
+                AssembledRows.TrimExcess();
+                output = new Table(new string[] { "Average Attendance" }, AssembledRows);
+                              
             }
             return output;
         }
