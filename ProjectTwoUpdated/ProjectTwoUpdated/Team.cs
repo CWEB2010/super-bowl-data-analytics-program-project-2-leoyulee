@@ -48,6 +48,22 @@ namespace Project_Two
             this.Coach = Coach;
             this.Points = Points;
         }
+        public string QBToString()
+        {
+            string output = "";
+            for (int i = 0; i < Quarterbacks.Count; i++)
+            {
+                if (Quarterbacks.Count > 0)
+                {
+                    output += " & ";
+                }
+                else
+                {
+                    output += Quarterbacks[i];
+                }
+            }
+            return output;
+        }
         public override string ToString()
         {
             return base.ToString();
