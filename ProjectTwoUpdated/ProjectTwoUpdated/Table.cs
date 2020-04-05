@@ -30,6 +30,35 @@ namespace Project_Two
                 this.AddRow(row);
             }
         }
+        public string[] ReturnHTMLArray()
+        {
+            List<string> output = new List<string>();
+            output.Add("\t<article>");
+            output.Add("\t\t<table>"); // style=\"width:100%\"
+            output.Add("\t\t\t<caption><strong>" + Title + "</strong></caption>");
+            output.Add("\t\t\t<thead>");
+            output.Add("\t\t\t\t<tr>");
+            foreach(string head in Header)
+            {
+                output.Add("\t\t\t\t\t<th>" + head + "</th>");
+            }
+            output.Add("\t\t\t\t</tr>");
+            output.Add("\t\t\t</thead>");
+            output.Add("\t\t\t<tbody>");
+            foreach(string[] row in Rows)
+            {
+                output.Add("\t\t\t\t<tr>");
+                foreach(string data in row)
+                {
+                    output.Add("\t\t\t\t\t<td>" + data + "</td>");
+                }
+                output.Add("\t\t\t\t</tr>");
+            }
+            output.Add("\t\t\t</tbody>");
+            output.Add("\t\t</table>");
+            output.Add("\t</article>");
+            return output.ToArray();
+        }
         public string[] ReturnTableArray()
         {
             string[] output = new string[Rows.Count + 4];
