@@ -248,19 +248,65 @@ namespace Project_Two
                 Table Query = CreateTable(i, ref Games);
                 OutputArray.AddRange(Query.ReturnTableArray());
             }
-            System.IO.File.WriteAllLines(FilePath+ FileName +".txt", OutputArray.ToArray());
+            if(CheckFilePath(FilePath + FileName + ".txt"))
+            {
+                Console.WriteLine("A file with the same name of " + FileName + ".txt" + " was found at your specified location! What do you want to do?");
+                int UserChoice = Prompt(false, "Overwrite the file", "Change the output file name", "Change the output file path", "Change both output file name and path", "Exit");
+                DebugOutput(UserChoice, ref FileName, ref FilePath);
+            }
+            Write(ref FilePath, ref FileName, OutputArray.ToArray());
             /*foreach(string row in OutputArray)
             {
                 Console.WriteLine(row);//debug
             }*/
+            Console.WriteLine("\nDone!");
+            Thread.Sleep(1000);
+        }
+        private static void Write(ref string FilePath, ref string FileName, string[] OutputArray)
+        {
+            //try
+            {
+                System.IO.File.WriteAllLines(@FilePath + FileName + ".txt", OutputArray);
+            }
+            /*catch
+            {
+                Console.WriteLine("The file has failed to write at location {0}{1}{2}\nWould you like to try again? Be sure that the file isn't opened anywhere else.", FilePath,FileName,".txt");
+                int UserChoice = Prompt(false, "Yes", "Exit");
+                if (UserChoice == 1)
+                    Write(ref FilePath, ref FileName, OutputArray);
+                else
+                    Exit();
+            }*/
             Console.Write("Writing Data File");
-            for(int i = 0; i<3; i++)
+            for (int i = 0; i < 3; i++)
             {
                 Console.Write(".");
                 Thread.Sleep(1000);
             }
-            Console.WriteLine("\nDone!");
-            Thread.Sleep(1000);
+        }
+        private static void DebugOutput(int UserChoice, ref string FileName, ref string FilePath)
+        {
+            if (UserChoice == 2)
+            {
+                Console.WriteLine("What would you like to name your output file?");
+                FileName = GetFileName(Prompt(false, DefaultFileName + ".txt", "Input your own file name", "Exit"), DefaultFileName);
+            }
+            if (UserChoice == 3)
+            {
+                Console.WriteLine("Where would you like the output file to be?");
+                FilePath = GetOutputPath(Prompt(false, "Output at " + DefaultOutputPath, "Input your own path", "Exit"), DefaultOutputPath, FileName);
+            }
+            if (UserChoice == 4)
+            {
+                Console.WriteLine("What would you like to name your output file?");
+                FileName = GetFileName(Prompt(false, DefaultFileName + ".txt", "Input your own file name", "Exit"), DefaultFileName);
+                Console.WriteLine("Where would you like the output file to be?");
+                FilePath = GetOutputPath(Prompt(false, "Output at " + DefaultOutputPath, "Input your own path", "Exit"), DefaultOutputPath, FileName);
+            }
+            if (UserChoice == 5)
+            {
+                Exit();
+            }
         }
         private static void Exit()
         {
@@ -279,7 +325,7 @@ namespace Project_Two
             {
                 Exit();
             }
-            Console.WriteLine("The file will be outputted at " + FilePath + FileName);
+            Console.WriteLine("The file will be outputted at " + FilePath + FileName +".txt");
             Console.WriteLine("Confirm?");
             UserChoice = Prompt(false, "Yes", "No", "Exit");
             if(UserChoice == 2)
@@ -329,7 +375,7 @@ namespace Project_Two
             {
                 Exit();
             }
-            if (!CheckFilePath(FilePath))
+            if (!CheckFilePath(FilePath, true))
             {
                 Console.WriteLine("Would you like to try to read the file at {0} again?", FilePath);
                 UserChoice = Prompt(false, "Yes", "No");
@@ -338,15 +384,16 @@ namespace Project_Two
             Console.Clear();
             return FilePath;
         }
-        private static bool CheckFilePath(string FilePath)
+        private static bool CheckFilePath(string FilePath, bool test = false)
         {
             try
             {
-                System.IO.File.OpenRead(FilePath);
+                File.Exists(FilePath);
             }
             catch
             {
-                Console.WriteLine("File couldn't be read at {0}", FilePath);
+                if (test)
+                    Console.WriteLine("File couldn't be found at {0}", FilePath);
                 return false;
             }
             try
@@ -357,20 +404,23 @@ namespace Project_Two
                 };
                 if (testParser.EndOfData)
                 {
-                    Console.WriteLine("File doesn't contain data!");
+                    if (test)
+                        Console.WriteLine("File doesn't contain data!");
                     return false;
                 }
                 testParser.SetDelimiters(",");
                 string[] headerFields = testParser.ReadFields();
                 if (headerFields.Length != 15)
                 {
-                    Console.WriteLine("File doesn't contain the correct amount of headers. Refer to README.");
+                    if (test)
+                        Console.WriteLine("File doesn't contain the correct amount of headers. Refer to README.");
                     return false;
                 }
             }
             catch
             {
-                Console.WriteLine("File cannot be read by the TextFieldParser.");
+                if (test)
+                    Console.WriteLine("File cannot be read by the TextFieldParser.");
                 return false;
             }
             return true;
