@@ -249,12 +249,12 @@ namespace Project_Two
         {
             var assembly = Assembly.GetExecutingAssembly();
             string topFile, botFile;
-            using (Stream topStream = assembly.GetManifestResourceStream("Project_Two.TopHTML.txt"))
-            using(StreamReader topReader = new StreamReader(topStream))
+            using (Stream topStream = assembly.GetManifestResourceStream("ProjectTwoUpdated.TopHTML.txt"))
+            using (StreamReader topReader = new StreamReader(topStream))
             {
                 topFile = topReader.ReadToEnd();
             }
-            using (Stream botStream = assembly.GetManifestResourceStream("Project_Two.BotHTML.txt"))
+            using (Stream botStream = assembly.GetManifestResourceStream("ProjectTwoUpdated.BotHTML.txt"))
             using (StreamReader botReader = new StreamReader(botStream))
             {
                 botFile = botReader.ReadToEnd();
@@ -267,13 +267,13 @@ namespace Project_Two
                 OutputArray.AddRange(Query.ReturnHTMLArray());
             }
             OutputArray.Add(botFile);
-            if (CheckFilePath(FilePath + FileName + ".txt"))
+            if (CheckFilePath(FilePath + FileName + ".html"))
             {
-                Console.WriteLine("A file with the same name of " + FileName + ".txt" + " was found at your specified location! What do you want to do?");
+                Console.WriteLine("A file with the same name of " + FileName + ".html" + " was found at your specified location! What do you want to do?");
                 int UserChoice = Prompt(false, "Overwrite the file", "Change the output file name", "Change the output file path", "Change both output file name and path", "Exit");
                 DebugOutput(UserChoice, ref FileName, ref FilePath, ".html");
             }
-            Write(ref FilePath, ref FileName, OutputArray.ToArray());
+            Write(ref FilePath, ref FileName, ".html", OutputArray.ToArray());
             /*foreach(string row in OutputArray)
             {
                 Console.WriteLine(row);//debug
@@ -295,7 +295,7 @@ namespace Project_Two
                 int UserChoice = Prompt(false, "Overwrite the file", "Change the output file name", "Change the output file path", "Change both output file name and path", "Exit");
                 DebugOutput(UserChoice, ref FileName, ref FilePath, ".txt");
             }
-            Write(ref FilePath, ref FileName, OutputArray.ToArray());
+            Write(ref FilePath, ref FileName, ".txt", OutputArray.ToArray());
             /*foreach(string row in OutputArray)
             {
                 Console.WriteLine(row);//debug
@@ -303,11 +303,11 @@ namespace Project_Two
             Console.WriteLine("\nDone!");
             Thread.Sleep(1000);
         }
-        private static void Write(ref string FilePath, ref string FileName, string[] OutputArray)
+        private static void Write(ref string FilePath, ref string FileName, string FileExtention, string[] OutputArray)
         {
             //try
             {
-                System.IO.File.WriteAllLines(@FilePath + FileName + ".txt", OutputArray);
+                System.IO.File.WriteAllLines(@FilePath + FileName + FileExtention, OutputArray);
             }
             /*catch
             {
@@ -444,7 +444,8 @@ namespace Project_Two
             {
                 if (!File.Exists(FilePath))
                 {
-                    Console.WriteLine("File couldn't be found at {0}", FilePath);
+                    if (test)
+                        Console.WriteLine("File couldn't be found at {0}", FilePath);
                     return false;
                 }
             }
