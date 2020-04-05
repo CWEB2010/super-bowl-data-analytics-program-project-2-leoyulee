@@ -388,7 +388,7 @@ namespace Project_Two
         {
             try
             {
-                if (File.Exists(FilePath))
+                if (!File.Exists(FilePath))
                 {
                     Console.WriteLine("File couldn't be found at {0}", FilePath);
                     return false;
