@@ -35,7 +35,7 @@ namespace Project_Two
             List<string> output = new List<string>();
             output.Add("\t<article>");
             output.Add("\t\t<table>"); // style=\"width:100%\"
-            output.Add("\t\t\t<caption>" + Title + "</caption>");
+            output.Add("\t\t\t<caption><strong>" + Title + "</strong></caption>");
             output.Add("\t\t\t<thead>");
             output.Add("\t\t\t\t<tr>");
             foreach(string head in Header)
