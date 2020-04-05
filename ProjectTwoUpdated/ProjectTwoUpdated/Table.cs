@@ -34,7 +34,7 @@ namespace Project_Two
         {
             List<string> output = new List<string>();
             output.Add("<h2>"+Title+"</h2>");
-            output.Add("<table style=\"width:100%\"");
+            output.Add("<table>"); // style=\"width:100%\"
             output.Add("\t<tr>");
             foreach(string head in Header)
             {
